@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Karadoc{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Chargement de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        {% if request.endpoint != 'index' %}
+        <a href="javascript:retour()" class="nav-btn nav-back">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <a href="javascript:home()" class="nav-btn nav-home">
+            <i class="fa-solid fa-house"></i>
+        </a>
+        {% endif %}
+        <a href="{{ url_for('parametres') }}" class="settings">
+            <i class="fa-solid fa-gear"></i>
+        </a>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        function retour() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = "{{ url_for('index') }}";
+            }
+        }
+
+        function home() {
+            window.location.href = "{{ url_for('index') }}";
+        }
+    </script>
+</body>
+</html>
