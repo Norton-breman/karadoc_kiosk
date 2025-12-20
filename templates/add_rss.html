@@ -1,6 +1,55 @@
 {% extends 'base.html' %}
 {% block title %}Ajouter une source{% endblock %}
 {% block content %}
+  <style>
+    .recherche-rss {
+      max-width: 300px;
+      margin: 0 auto;
+      padding: 10px;
+    }
+    .recherche-rss form {
+      margin-bottom: 1em;
+    }
+    .recherche-rss input[type="text"] {
+      width: 100%;
+      padding: 0.5em;
+      border: 2px solid #001858;
+      border-radius: 0.5em;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+    .recherche-rss button {
+      width: 100%;
+      padding: 0.7em;
+      background: #06d6a0;
+      color: white;
+      border: none;
+      border-radius: 0.5em;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 0.5em;
+    }
+    .recherche-rss button:hover {
+      background: #05a57e;
+    }
+    .btn-ajouter {
+      background: #06d6a0;
+      color: white;
+      border: none;
+      padding: 0.4em 0.8em;
+      border-radius: 0.5em;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .btn-ajouter:hover {
+      background: #05a57e;
+    }
+    .nom-source {
+      font-size: 0.9em;
+      display: block;
+      margin-bottom: 0.5em;
+    }
+  </style>
   <div class="recherche-rss">
     <h2><i class="fas fa-search"></i> Rechercher un podcast</h2>
     {% for t in searchtools %}
