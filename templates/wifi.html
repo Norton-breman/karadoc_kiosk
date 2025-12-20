@@ -153,5 +153,71 @@ document.getElementById('passwordModal').addEventListener('click', function(e) {
 .bar.active {
     background: #06d6a0;
 }
+
+/* Media queries pour écran 320x480px */
+@media screen and (max-width: 320px) {
+    .wifi-networks {
+        max-width: 100%;
+        margin: 1em 0.5em;
+    }
+
+    .wifi-networks h3 {
+        font-size: 1.1em;
+    }
+
+    .wifi-network {
+        margin: 0.4em 0;
+        padding: 0.7em;
+        font-size: 0.9em;
+    }
+
+    .network-name {
+        font-size: 1em;
+    }
+
+    .network-details {
+        font-size: 0.75em;
+    }
+
+    .signal-bars {
+        gap: 1px;
+    }
+
+    .bar {
+        width: 5px;
+    }
+
+    .bar:nth-child(1) { height: 6px; }
+    .bar:nth-child(2) { height: 10px; }
+    .bar:nth-child(3) { height: 14px; }
+    .bar:nth-child(4) { height: 18px; }
+
+    /* Adapter les divs de statut */
+    div[style*="width: 300px"] {
+        width: 280px !important;
+        padding: 0.7em !important;
+        font-size: 0.9em !important;
+    }
+
+    /* Modal de mot de passe */
+    #passwordModal > div {
+        width: 280px !important;
+        padding: 1.5em !important;
+        margin: 15vh auto !important;
+    }
+
+    #passwordModal h3 {
+        font-size: 1.1em;
+    }
+
+    #passwordModal input[type="password"] {
+        font-size: 0.9em;
+    }
+
+    #passwordModal button {
+        font-size: 0.85em;
+        padding: 0.4em 0.8em !important;
+    }
+}
 </style>
 {% endblock %}

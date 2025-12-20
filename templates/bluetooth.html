@@ -198,10 +198,62 @@
         flex-direction: column;
         gap: 1em;
     }
-    
+
     .device-actions {
         justify-content: center;
         width: 100%;
+    }
+}
+
+/* Media queries pour écran 320x480px */
+@media screen and (max-width: 320px) {
+    .bluetooth-section {
+        max-width: 100%;
+        margin: 1em 0.5em;
+    }
+
+    .bluetooth-section h3 {
+        font-size: 1em;
+    }
+
+    .bluetooth-device {
+        margin: 0.5em 0;
+        padding: 0.7em;
+        font-size: 0.85em;
+        flex-direction: column;
+        gap: 0.7em;
+    }
+
+    .device-name {
+        font-size: 0.95em;
+        margin-bottom: 0.2em;
+    }
+
+    .device-details {
+        font-size: 0.7em;
+    }
+
+    .paired-badge {
+        font-size: 0.6em;
+        padding: 0.15em 0.4em;
+    }
+
+    .device-actions {
+        justify-content: center;
+        width: 100%;
+        gap: 0.4em;
+    }
+
+    .btn-pair, .btn-connect, .btn-disconnect, .btn-remove {
+        font-size: 0.8em;
+        padding: 0.4em 0.8em;
+    }
+
+    /* Adapter les divs de statut */
+    div[style*="width: 300px"] {
+        width: 280px !important;
+        padding: 0.7em !important;
+        font-size: 0.9em !important;
     }
 }
 </style>

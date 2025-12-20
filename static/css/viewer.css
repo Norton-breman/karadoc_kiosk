@@ -63,3 +63,31 @@
 .photo-next {
   right: 20px;
 }
+
+/* Media queries pour écran 320x480px */
+@media screen and (max-width: 320px) {
+  .photo-modal img {
+    max-width: 95%;
+    max-height: 85%;
+    margin-top: 3vh;
+  }
+
+  .photo-close {
+    top: 10px;
+    right: 15px;
+    font-size: 30px;
+  }
+
+  .photo-navigation {
+    font-size: 24px;
+    padding: 8px;
+  }
+
+  .photo-prev {
+    left: 10px;
+  }
+
+  .photo-next {
+    right: 10px;
+  }
+}

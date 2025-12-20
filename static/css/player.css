@@ -236,3 +236,91 @@
         font-size: 1.8em;
     }
 }
+
+/* Media queries pour écran 320x480px */
+@media screen and (max-width: 320px) {
+    .player-container {
+        width: 100%;
+        padding: 1em;
+        border-radius: 0;
+    }
+
+    .player-close {
+        top: 10px;
+        right: 15px;
+        font-size: 30px;
+    }
+
+    .player-artwork {
+        height: 180px;
+        margin-bottom: 1em;
+    }
+
+    .player-info {
+        margin-bottom: 1em;
+    }
+
+    .player-info h2 {
+        font-size: 1em;
+        margin-bottom: 0.2em;
+    }
+
+    .player-info p {
+        font-size: 0.85em;
+    }
+
+    .player-navigation {
+        gap: 0.5em;
+        margin-bottom: 1em;
+    }
+
+    .player-navigation button {
+        width: 35px;
+        height: 35px;
+        font-size: 1.1em;
+    }
+
+    #playPauseBtn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5em;
+    }
+
+    .player-timeline {
+        margin-bottom: 0.5em;
+    }
+
+    .timeline-bar {
+        height: 6px;
+    }
+
+    .timeline-bar::-webkit-slider-thumb {
+        width: 14px;
+        height: 14px;
+    }
+
+    .timeline-bar::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
+    }
+
+    .player-time {
+        font-size: 0.75em;
+        margin-bottom: 0.8em;
+    }
+
+    .player-volume {
+        gap: 0.5em;
+    }
+
+    .player-volume button {
+        width: 32px;
+        height: 32px;
+        font-size: 1em;
+    }
+
+    .player-volume span {
+        font-size: 0.85em;
+        min-width: 40px;
+    }
+}

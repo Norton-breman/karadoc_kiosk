@@ -271,3 +271,142 @@ h2 {
     transform: translateX(-50%) scale(1.2) rotate(180deg);
     margin-left: -20px;
 }
+
+/* Media queries pour écran 320x480px */
+@media screen and (max-width: 320px) {
+    body {
+        font-size: 14px;
+    }
+
+    header {
+        padding: 0.5em;
+        font-size: 1.2em;
+    }
+
+    .settings {
+        right: 10px;
+        top: 3px;
+        font-size: 1.2em;
+    }
+
+    .nav-btn {
+        top: 3px;
+        font-size: 1.2em;
+    }
+
+    .nav-back {
+        left: 10px;
+    }
+
+    .nav-home {
+        left: 50px;
+    }
+
+    h2 {
+        font-size: 1.3em;
+        margin-top: 15px;
+    }
+
+    .liste-parametres {
+        margin-top: 10px;
+    }
+
+    .liste-parametres li {
+        width: 280px;
+        margin: 8px auto;
+        padding: 8px;
+        font-size: 0.95em;
+    }
+
+    .cardlist {
+        gap: 0.6em;
+        padding: 0.6em;
+    }
+
+    /* Cartes de 90x90px pour avoir 2 colonnes sur 320px */
+    .card {
+        width: 90px;
+        height: 90px;
+        font-size: 0.85em;
+    }
+
+    .card.root {
+        font-size: 1em;
+    }
+
+    .card.file {
+        width: 90px;
+        height: 90px;
+    }
+
+    .card-container {
+        width: 90px;
+        height: 90px;
+    }
+
+    .card-label {
+        font-size: 0.8rem;
+        max-width: calc(90px * 1.2);
+    }
+
+    .card .overlay {
+        padding: 0.3em 0;
+        font-size: 0.85em;
+    }
+
+    /* Boutons de suppression et refresh plus petits */
+    .delete-btn, .refresh-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75em;
+    }
+
+    .delete-btn-file {
+        bottom: 3px;
+        right: 3px;
+    }
+
+    .delete-btn-dir {
+        bottom: 3px;
+        margin-left: 15px;
+    }
+
+    .delete-btn-dir:hover {
+        transform: translateX(-50%) scale(1.1);
+        margin-left: 15px;
+    }
+
+    .refresh-btn-dir {
+        bottom: 3px;
+        margin-left: -15px;
+    }
+
+    .refresh-btn-dir:hover {
+        transform: translateX(-50%) scale(1.2) rotate(180deg);
+        margin-left: -15px;
+    }
+
+    .card-checkbox {
+        width: 16px;
+        height: 16px;
+        top: 4px;
+        left: 4px;
+    }
+
+    /* Styles pour les formulaires et boutons */
+    form {
+        font-size: 0.9em;
+    }
+
+    form input[type="text"],
+    form input[type="password"] {
+        font-size: 0.85em;
+        padding: 0.4em;
+    }
+
+    button.btn,
+    .btn-ajouter {
+        font-size: 0.85em;
+        padding: 0.5em 1em;
+    }
+}
