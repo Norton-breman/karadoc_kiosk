@@ -4,6 +4,8 @@ import re
 
 connection_bp = Blueprint("wifi", __name__)
 
+WIFI_INTERFACE = "wlan0"
+
 @connection_bp.route("/wifi_settings")
 def wifi_settings():
     networks = scan_wifi_networks()
@@ -28,142 +30,176 @@ def wifi_connect():
         return render_template('wifi.html', networks=networks, current_wifi=current_wifi, error=message)
 
 def scan_wifi_networks():
-    """Scanne les réseaux WiFi disponibles avec ConnMan"""
+    """Scanne les réseaux WiFi disponibles avec iwlist"""
     try:
-        # Scanner les réseaux disponibles
-        result = subprocess.run(['connmanctl', 'services'],
-                              capture_output=True, text=True, timeout=10)
+        # Scanner les réseaux (essayer avec et sans sudo)
+        try:
+            result = subprocess.run(['sudo', 'iwlist', WIFI_INTERFACE, 'scan'],
+                                  capture_output=True, text=True, timeout=15)
+        except FileNotFoundError:
+            result = subprocess.run(['iwlist', WIFI_INTERFACE, 'scan'],
+                                  capture_output=True, text=True, timeout=15)
 
         if result.returncode != 0:
             return []
 
         networks = {}
-        lines = result.stdout.strip().split('\n')
+        current_cell = {}
 
-        for line in lines:
-            # Format: "*AO MyNetwork    wifi_abc123_managed_psk"
-            # Le premier caractère peut être '*' (connecté), ' ' (disponible)
-            match = re.match(r'^[\*\s][\w\s]*\s+([\w\-]+)\s+(wifi_\w+)$', line)
-            if match:
-                ssid = match.group(1).strip()
-                service_id = match.group(2)
+        for line in result.stdout.split('\n'):
+            line = line.strip()
 
-                if ssid and service_id:
-                    # Déterminer le type de sécurité depuis le service_id
-                    if '_none' in service_id or '_open' in service_id:
-                        security = 'Open'
-                        secured = False
-                    elif '_psk' in service_id or '_wpa' in service_id:
-                        security = 'WPA/WPA2'
-                        secured = True
-                    elif '_wep' in service_id:
-                        security = 'WEP'
-                        secured = True
-                    else:
-                        security = 'Secured'
-                        secured = True
-
-                    # Obtenir la force du signal
-                    signal = get_signal_strength(service_id)
-
+            # Nouvelle cellule (nouveau réseau)
+            if line.startswith('Cell '):
+                if current_cell.get('ssid'):
+                    ssid = current_cell['ssid']
                     # Garder le meilleur signal pour chaque SSID
-                    if ssid not in networks or signal > networks[ssid]['signal']:
-                        networks[ssid] = {
-                            'ssid': ssid,
-                            'service_id': service_id,
-                            'signal': signal,
-                            'security': security,
-                            'secured': secured
-                        }
+                    if ssid not in networks or current_cell['signal'] > networks[ssid]['signal']:
+                        networks[ssid] = current_cell
+                current_cell = {}
 
-        return sorted(networks.values(), key=lambda x: x['signal'], reverse=True)
+            # ESSID
+            elif 'ESSID:' in line:
+                match = re.search(r'ESSID:"([^"]+)"', line)
+                if match:
+                    current_cell['ssid'] = match.group(1)
+
+            # Signal level
+            elif 'Signal level=' in line:
+                match = re.search(r'Signal level=(-?\d+)', line)
+                if match:
+                    dbm = int(match.group(1))
+                    # Convertir dBm en pourcentage (approximation)
+                    # -30 dBm = excellent (100%), -90 dBm = très faible (0%)
+                    signal_percent = max(0, min(100, 2 * (dbm + 100)))
+                    current_cell['signal'] = signal_percent
+
+            # Encryption
+            elif 'Encryption key:' in line:
+                if 'on' in line.lower():
+                    current_cell['encrypted'] = True
+                else:
+                    current_cell['encrypted'] = False
+
+            # Type de sécurité
+            elif 'IEEE 802.11i/WPA2' in line or 'WPA2' in line:
+                current_cell['security'] = 'WPA2'
+            elif 'WPA Version' in line or line.startswith('WPA:'):
+                if 'security' not in current_cell:
+                    current_cell['security'] = 'WPA'
+            elif 'WEP' in line:
+                if 'security' not in current_cell:
+                    current_cell['security'] = 'WEP'
+
+        # Ajouter la dernière cellule
+        if current_cell.get('ssid'):
+            ssid = current_cell['ssid']
+            if ssid not in networks or current_cell['signal'] > networks[ssid]['signal']:
+                networks[ssid] = current_cell
+
+        # Formater les résultats
+        result_list = []
+        for cell in networks.values():
+            if not cell.get('signal'):
+                cell['signal'] = 50  # Valeur par défaut
+
+            if cell.get('encrypted'):
+                security = cell.get('security', 'WPA/WPA2')
+                secured = True
+            else:
+                security = 'Open'
+                secured = False
+
+            result_list.append({
+                'ssid': cell['ssid'],
+                'signal': cell['signal'],
+                'security': security,
+                'secured': secured
+            })
+
+        return sorted(result_list, key=lambda x: x['signal'], reverse=True)
 
     except (subprocess.TimeoutExpired, FileNotFoundError) as e:
         return []
-
-def get_signal_strength(service_id):
-    """Récupère la force du signal pour un service donné"""
-    try:
-        result = subprocess.run(['connmanctl', 'services', service_id],
-                              capture_output=True, text=True, timeout=5)
-
-        # Chercher la ligne Strength
-        for line in result.stdout.split('\n'):
-            if 'Strength' in line:
-                match = re.search(r'Strength\s*=\s*(\d+)', line)
-                if match:
-                    return int(match.group(1))
-
-        # Par défaut, retourner 50
-        return 50
-    except:
-        return 50
+    except Exception as e:
+        return []
 
 def connect_to_wifi(ssid, password=None):
-    """Se connecte à un réseau WiFi avec ConnMan"""
+    """Se connecte à un réseau WiFi avec wpa_cli"""
     try:
-        # D'abord, trouver le service_id correspondant au SSID
-        result = subprocess.run(['connmanctl', 'services'],
-                              capture_output=True, text=True, timeout=10)
+        # Ajouter un nouveau réseau
+        result = subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'add_network'],
+                              capture_output=True, text=True, timeout=5)
 
         if result.returncode != 0:
-            return False, "Impossible de lister les réseaux"
+            return False, "Impossible d'ajouter le réseau"
 
-        service_id = None
-        for line in result.stdout.strip().split('\n'):
-            if ssid in line:
-                match = re.search(r'(wifi_\w+)', line)
-                if match:
-                    service_id = match.group(1)
-                    break
+        # Récupérer l'ID du réseau créé
+        network_id = result.stdout.strip()
 
-        if not service_id:
-            return False, f"Réseau {ssid} introuvable"
+        try:
+            # Configurer le SSID
+            subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'set_network',
+                          network_id, 'ssid', f'"{ssid}"'],
+                         capture_output=True, text=True, timeout=5, check=True)
 
-        # Se connecter au réseau
-        if password:
-            # Créer un fichier de configuration temporaire pour le mot de passe
-            # ConnMan nécessite une interaction pour le mot de passe
-            # On utilise l'approche avec echo et pipe
-            cmd = f'printf "%s\\n" "{password}" | connmanctl connect {service_id}'
-            result = subprocess.run(cmd, shell=True, capture_output=True,
-                                  text=True, timeout=30)
-        else:
-            # Réseau ouvert
-            result = subprocess.run(['connmanctl', 'connect', service_id],
-                                  capture_output=True, text=True, timeout=30)
+            # Configurer la sécurité
+            if password:
+                # Réseau sécurisé
+                subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'set_network',
+                              network_id, 'psk', f'"{password}"'],
+                             capture_output=True, text=True, timeout=5, check=True)
+            else:
+                # Réseau ouvert
+                subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'set_network',
+                              network_id, 'key_mgmt', 'NONE'],
+                             capture_output=True, text=True, timeout=5, check=True)
 
-        if result.returncode == 0 or 'Connected' in result.stdout:
-            return True, f"Connecté au réseau {ssid}"
-        else:
-            error_msg = result.stderr.strip() if result.stderr else result.stdout.strip()
-            return False, f"Erreur de connexion: {error_msg}"
+            # Activer le réseau
+            subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'enable_network', network_id],
+                         capture_output=True, text=True, timeout=5, check=True)
+
+            # Sauvegarder la configuration
+            subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'save_config'],
+                         capture_output=True, text=True, timeout=5)
+
+            return True, f"Connexion au réseau {ssid} en cours..."
+
+        except subprocess.CalledProcessError as e:
+            # En cas d'erreur, supprimer le réseau créé
+            subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'remove_network', network_id],
+                         capture_output=True, text=True, timeout=5)
+            return False, f"Erreur de configuration: {e.stderr if e.stderr else 'configuration invalide'}"
 
     except subprocess.TimeoutExpired:
         return False, "Délai d'attente dépassé"
     except FileNotFoundError:
-        return False, "ConnMan non disponible"
+        return False, "wpa_cli non disponible"
     except Exception as e:
         return False, f"Erreur: {str(e)}"
 
 def get_current_wifi():
     """Récupère le réseau WiFi actuellement connecté"""
     try:
-        result = subprocess.run(['connmanctl', 'services'],
+        # Essayer avec iwgetid
+        result = subprocess.run(['iwgetid', '-r'],
                               capture_output=True, text=True, timeout=5)
 
-        if result.returncode != 0:
-            return None
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout.strip()
 
-        # Chercher la ligne avec '*' (connecté) ou '*A' (auto-connecté)
-        for line in result.stdout.strip().split('\n'):
-            if line.startswith('*'):
-                # Extraire le SSID de la ligne
-                match = re.match(r'^\*[\w\s]*\s+([\w\-]+)\s+wifi_', line)
-                if match:
-                    return match.group(1).strip()
+        # Si iwgetid ne fonctionne pas, essayer avec wpa_cli
+        result = subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'status'],
+                              capture_output=True, text=True, timeout=5)
+
+        if result.returncode == 0:
+            for line in result.stdout.split('\n'):
+                if line.startswith('ssid='):
+                    return line.split('=', 1)[1].strip()
 
         return None
 
     except (subprocess.TimeoutExpired, FileNotFoundError):
+        return None
+    except Exception:
         return None
