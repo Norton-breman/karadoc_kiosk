@@ -3,12 +3,15 @@
     position: fixed;
     bottom: 0;
     left: 0;
+    right: 0;
     width: 320px;
+    max-height: 50vh;
     background-color: #d1d5db;
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
     z-index: 2000;
     padding: 4px;
     box-sizing: border-box;
+    transform: translateZ(0);
 }
 
 /* Personnalisation du clavier Simple-Keyboard */
