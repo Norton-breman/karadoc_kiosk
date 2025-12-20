@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="add virtual keyboard">
+    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="adjust cards size">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/progress.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/progress.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -174,14 +173,23 @@
       <option name="project" value="LOCAL" />
       <updated>1766237586525</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="adjust cards size">
+      <option name="closed" value="true" />
+      <created>1766238556437</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1766238556437</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial commit" />
     <MESSAGE value="adapt viewport to 320x480px screen" />
     <MESSAGE value="add virtual keyboard" />
-    <option name="LAST_COMMIT_MESSAGE" value="add virtual keyboard" />
+    <MESSAGE value="adjust cards size" />
+    <option name="LAST_COMMIT_MESSAGE" value="adjust cards size" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
