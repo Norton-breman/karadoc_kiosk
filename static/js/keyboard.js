@@ -113,6 +113,23 @@
         const container = document.getElementById('keyboard-container');
         if (container) {
             container.style.display = 'block';
+
+            // Faire défiler pour que l'input soit visible au-dessus du clavier
+            if (currentInput) {
+                setTimeout(() => {
+                    const keyboardHeight = container.offsetHeight;
+                    const inputRect = currentInput.getBoundingClientRect();
+                    const inputBottom = inputRect.bottom;
+                    const windowHeight = window.innerHeight;
+
+                    // Si l'input est caché par le clavier
+                    if (inputBottom > (windowHeight - keyboardHeight)) {
+                        // Calculer le scroll nécessaire
+                        const scrollAmount = inputBottom - (windowHeight - keyboardHeight) + 20; // +20 pour un peu de marge
+                        window.scrollBy({ top: scrollAmount, behavior: 'smooth' });
+                    }
+                }, 100);
+            }
         }
     }
 
