@@ -86,8 +86,8 @@ h2 {
 
 .card {
   position: relative;
-  width: 150px;
-  height: 150px;
+  width: 135px;
+  height: 135px;
   align-items: center;
   border-radius: 1em;
   overflow: hidden;
@@ -141,8 +141,8 @@ h2 {
 }
 
 .card.file {
-  width: 150px;
-  height: 150px;
+  width: 135px;
+  height: 135px;
   border-radius: 1em;
   background-size: cover;
   background-position: center;
@@ -158,7 +158,7 @@ h2 {
   color: #000;
   font-weight: 600;
   font-size: 0.95rem;
-  max-width: calc(150px * 1.1);  /* 20% de plus */
+  max-width: calc(135px * 1.1);  /* 20% de plus */
   white-space: normal;       /* permet les retours à la ligne */
 }
 
@@ -185,8 +185,8 @@ h2 {
 .card-container {
     position: relative;
     display: inline-block;
-    width: 150px;
-    height: 150px;
+    width: 135px;
+    height: 135px;
 }
 
 .card-container .card {
