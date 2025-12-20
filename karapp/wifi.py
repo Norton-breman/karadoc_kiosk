@@ -181,8 +181,8 @@ def connect_to_wifi(ssid, password=None):
 def get_current_wifi():
     """Récupère le réseau WiFi actuellement connecté"""
     try:
-        # Essayer avec iwgetid
-        result = subprocess.run(['iwgetid', '-r'],
+        # Essayer avec iwgetid (avec sudo)
+        result = subprocess.run(['sudo', 'iwgetid', WIFI_INTERFACE, '-r'],
                               capture_output=True, text=True, timeout=5)
 
         if result.returncode == 0 and result.stdout.strip():
@@ -195,7 +195,21 @@ def get_current_wifi():
         if result.returncode == 0:
             for line in result.stdout.split('\n'):
                 if line.startswith('ssid='):
-                    return line.split('=', 1)[1].strip()
+                    ssid = line.split('=', 1)[1].strip()
+                    # Ignorer si le SSID est vide
+                    if ssid:
+                        return ssid
+
+        # Dernière tentative : utiliser ip/iw pour vérifier la connexion
+        result = subprocess.run(['iw', 'dev', WIFI_INTERFACE, 'link'],
+                              capture_output=True, text=True, timeout=5)
+
+        if result.returncode == 0:
+            for line in result.stdout.split('\n'):
+                if 'SSID:' in line:
+                    ssid = line.split('SSID:', 1)[1].strip()
+                    if ssid:
+                        return ssid
 
         return None
 

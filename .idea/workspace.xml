@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="change wifi management to conman instead of network-manager (for use under dietpi)">
-      <change beforePath="$PROJECT_DIR$/templates/wifi.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/wifi.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karapp/wifi.py" beforeDir="false" afterPath="$PROJECT_DIR$/karapp/wifi.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -228,7 +228,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766241832604</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="change wifi management to conman instead of network-manager (for use under dietpi)">
+      <option name="closed" value="true" />
+      <created>1766242012950</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1766242012950</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
