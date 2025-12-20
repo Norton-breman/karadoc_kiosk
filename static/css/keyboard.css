@@ -7,7 +7,8 @@
     background-color: #d1d5db;
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
     z-index: 2000;
-    padding: 8px;
+    padding: 4px;
+    box-sizing: border-box;
 }
 
 /* Personnalisation du clavier Simple-Keyboard */
@@ -18,7 +19,7 @@
 }
 
 .simple-keyboard .hg-button {
-    height: 35px;
+    height: 32px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -26,7 +27,7 @@
     border: 1px solid #b0b0b0;
     border-radius: 4px;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     color: #1f2937;
     cursor: pointer;
@@ -58,13 +59,13 @@
 
 /* Réduire les marges entre les touches */
 .simple-keyboard .hg-row {
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .simple-keyboard .hg-row .hg-button {
-    margin: 0 2px;
+    margin: 0 1px;
 }
 
 .simple-keyboard .hg-row:not(:last-child) {
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
