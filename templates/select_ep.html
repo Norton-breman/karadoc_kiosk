@@ -4,24 +4,6 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/progress.css') }}">
 
-<style>
-.btn {
-    background: #06d6a0;
-    color: white;
-    border: none;
-    padding: 0.8em 1.5em;
-    border-radius: 0.5em;
-    font-size: 1em;
-    cursor: pointer;
-    margin: 1em auto;
-    display: block;
-    max-width: 280px;
-}
-.btn:hover {
-    background: #05a57e;
-}
-</style>
-
 <h2> Episodes à ajouter</h2>
 <div>
     <form id="episodes-form" action="{{ url_for('download_podcast') }}" method="POST">

@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="adjust cards size">
-      <change beforePath="$PROJECT_DIR$/static/css/progress.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/progress.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/add_rss.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/add_rss.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/bluetooth.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bluetooth.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/select_ep.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/select_ep.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/wifi.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/wifi.html" afterDir="false" />
+    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="adjust all size to 320 px">
+      <change beforePath="$PROJECT_DIR$/static/css/keyboard.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/keyboard.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/keyboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/keyboard.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -192,7 +189,23 @@
       <option name="project" value="LOCAL" />
       <updated>1766239132760</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="adjust all size to 320 px">
+      <option name="closed" value="true" />
+      <created>1766239619833</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1766239619833</updated>
+    </task>
+    <task id="LOCAL-00016" summary="adjust all size to 320 px">
+      <option name="closed" value="true" />
+      <created>1766239827045</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1766239827045</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -200,7 +213,8 @@
     <MESSAGE value="adapt viewport to 320x480px screen" />
     <MESSAGE value="add virtual keyboard" />
     <MESSAGE value="adjust cards size" />
-    <option name="LAST_COMMIT_MESSAGE" value="adjust cards size" />
+    <MESSAGE value="adjust all size to 320 px" />
+    <option name="LAST_COMMIT_MESSAGE" value="adjust all size to 320 px" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
