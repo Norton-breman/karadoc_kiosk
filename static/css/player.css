@@ -9,8 +9,8 @@
     z-index: 1000;
     left: 0;
     top: 0;
-    width: 100%;
-    height: 100%;
+    width: 320px;
+    height: 480px;
     background-color: rgba(0, 0, 0, 0.9);
 }
 
@@ -21,20 +21,21 @@
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #fef6e4;
-    border-radius: 1.5em;
-    padding: 2em;
-    width: 90%;
-    max-width: 500px;
+    border-radius: 1em;
+    padding: 1em;
+    width: 300px;
+    max-height: 460px;
+    overflow-y: auto;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 /* Bouton de fermeture */
 .player-close {
     position: absolute;
-    top: 20px;
-    right: 35px;
+    top: 10px;
+    right: 15px;
     color: white;
-    font-size: 40px;
+    font-size: 28px;
     font-weight: bold;
     cursor: pointer;
     transition: color 0.3s;
@@ -48,32 +49,32 @@
 /* Artwork de la piste */
 .player-artwork {
     width: 100%;
-    height: 300px;
-    border-radius: 1em;
+    height: 180px;
+    border-radius: 0.8em;
     background-size: cover;
     background-position: center;
     background-color: #f3d2c1;
-    margin-bottom: 1.5em;
+    margin-bottom: 0.8em;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 /* Informations de la piste */
 .player-info {
     text-align: center;
-    margin-bottom: 1.5em;
+    margin-bottom: 0.8em;
 }
 
 .player-info h2 {
     margin: 0;
     color: #001858;
-    font-size: 1.5em;
-    margin-bottom: 0.3em;
+    font-size: 1em;
+    margin-bottom: 0.2em;
 }
 
 .player-info p {
     margin: 0;
     color: #666;
-    font-size: 1.1em;
+    font-size: 0.85em;
 }
 
 /* Contrôles de navigation */
@@ -81,17 +82,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 1em;
-    margin-bottom: 1.5em;
+    gap: 0.6em;
+    margin-bottom: 0.8em;
 }
 
 .player-navigation button {
     background: #f582ae;
     border: none;
     color: white;
-    font-size: 1.5em;
-    width: 50px;
-    height: 50px;
+    font-size: 1.1em;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     cursor: pointer;
     transition: background 0.3s, transform 0.2s;
@@ -102,13 +103,13 @@
 
 .player-navigation button:hover {
     background: #e56d96;
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 #playPauseBtn {
-    width: 70px;
-    height: 70px;
-    font-size: 2em;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5em;
     background: #06d6a0;
 }
 
@@ -118,12 +119,12 @@
 
 /* Timeline */
 .player-timeline {
-    margin-bottom: 1em;
+    margin-bottom: 0.5em;
 }
 
 .timeline-bar {
     width: 100%;
-    height: 8px;
+    height: 6px;
     -webkit-appearance: none;
     appearance: none;
     background: #ddd;
@@ -135,8 +136,8 @@
 .timeline-bar::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     background: #f582ae;
     border-radius: 50%;
     cursor: pointer;
@@ -148,8 +149,8 @@
 }
 
 .timeline-bar::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     background: #f582ae;
     border-radius: 50%;
     cursor: pointer;
@@ -166,8 +167,8 @@
     display: flex;
     justify-content: space-between;
     color: #666;
-    font-size: 0.9em;
-    margin-bottom: 1em;
+    font-size: 0.75em;
+    margin-bottom: 0.6em;
 }
 
 /* Contrôles de volume */
@@ -175,16 +176,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 1em;
+    gap: 0.6em;
 }
 
 .player-volume button {
     background: #8bd3dd;
     border: none;
     color: white;
-    font-size: 1.2em;
-    width: 40px;
-    height: 40px;
+    font-size: 1em;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     cursor: pointer;
     transition: background 0.3s, transform 0.2s;
@@ -195,44 +196,14 @@
 
 .player-volume button:hover {
     background: #6cc2ce;
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .player-volume span {
     color: #001858;
     font-weight: bold;
-    min-width: 50px;
+    min-width: 40px;
+    font-size: 0.85em;
     text-align: center;
 }
 
-/* Responsive design */
-@media (max-width: 600px) {
-    .player-container {
-        width: 95%;
-        padding: 1.5em;
-    }
-
-    .player-artwork {
-        height: 250px;
-    }
-
-    .player-info h2 {
-        font-size: 1.2em;
-    }
-
-    .player-info p {
-        font-size: 1em;
-    }
-
-    .player-navigation button {
-        width: 45px;
-        height: 45px;
-        font-size: 1.3em;
-    }
-
-    #playPauseBtn {
-        width: 60px;
-        height: 60px;
-        font-size: 1.8em;
-    }
-}

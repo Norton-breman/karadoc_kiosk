@@ -5,8 +5,8 @@
   z-index: 1000;
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
+  width: 320px;
+  height: 480px;
   background-color: rgba(0, 0, 0, 0.9);
   cursor: pointer;
 }
@@ -14,9 +14,9 @@
 .photo-modal img {
   display: block;
   margin: auto;
-  max-width: 90%;
-  max-height: 90%;
-  margin-top: 5vh;
+  max-width: 95%;
+  max-height: 85%;
+  margin-top: 3vh;
   border-radius: 0.5em;
 }
 
@@ -26,10 +26,10 @@
 
 .photo-close {
   position: absolute;
-  top: 20px;
-  right: 35px;
+  top: 10px;
+  right: 15px;
   color: white;
-  font-size: 40px;
+  font-size: 28px;
   font-weight: bold;
   cursor: pointer;
   transition: color 0.3s;
@@ -44,10 +44,10 @@
   top: 50%;
   transform: translateY(-50%);
   color: white;
-  font-size: 30px;
+  font-size: 24px;
   font-weight: bold;
   cursor: pointer;
-  padding: 10px;
+  padding: 8px;
   user-select: none;
   transition: color 0.3s;
 }
@@ -57,9 +57,9 @@
 }
 
 .photo-prev {
-  left: 20px;
+  left: 10px;
 }
 
 .photo-next {
-  right: 20px;
+  right: 10px;
 }

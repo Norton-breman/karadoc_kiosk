@@ -1,9 +1,14 @@
+html, body {
+  width: 320px;
+  height: 480px;
+  margin: 0;
+  padding: 0;
+}
+
 body {
     font-family: 'Comic Neue', sans-serif;
     background-color: #fef6e4;
     color: #001858;
-    margin: 0;
-    padding: 0;
     text-align: center;
 }
 
