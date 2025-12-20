@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="adjust all size to 320 px" />
+    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="change wifi management to conman instead of network-manager (for use under dietpi)">
+      <change beforePath="$PROJECT_DIR$/templates/wifi.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/wifi.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -218,7 +220,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766240126292</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="change wifi management to conman instead of network-manager (for use under dietpi)">
+      <option name="closed" value="true" />
+      <created>1766241832604</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1766241832604</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -227,7 +237,8 @@
     <MESSAGE value="add virtual keyboard" />
     <MESSAGE value="adjust cards size" />
     <MESSAGE value="adjust all size to 320 px" />
-    <option name="LAST_COMMIT_MESSAGE" value="adjust all size to 320 px" />
+    <MESSAGE value="change wifi management to conman instead of network-manager (for use under dietpi)" />
+    <option name="LAST_COMMIT_MESSAGE" value="change wifi management to conman instead of network-manager (for use under dietpi)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
