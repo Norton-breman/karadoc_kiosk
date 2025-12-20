@@ -1,0 +1,70 @@
+/* Conteneur du clavier virtuel */
+#keyboard-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 320px;
+    background-color: #d1d5db;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 2000;
+    padding: 8px;
+}
+
+/* Personnalisation du clavier Simple-Keyboard */
+.simple-keyboard {
+    background-color: transparent;
+    border-radius: 0;
+    padding: 0;
+}
+
+.simple-keyboard .hg-button {
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #b0b0b0;
+    border-radius: 4px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    font-weight: 500;
+    color: #1f2937;
+    cursor: pointer;
+}
+
+.simple-keyboard .hg-button:active {
+    background: #e5e7eb;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.simple-keyboard .hg-button.hg-standardBtn {
+    width: 20px;
+}
+
+/* Boutons spéciaux plus larges */
+.simple-keyboard .hg-button.hg-functionBtn {
+    background-color: #9ca3af;
+    color: white;
+}
+
+.simple-keyboard .hg-button.hg-functionBtn:active {
+    background-color: #6b7280;
+}
+
+/* Barre d'espace */
+.simple-keyboard .hg-button[data-skbtn="{space}"] {
+    width: 200px;
+}
+
+/* Réduire les marges entre les touches */
+.simple-keyboard .hg-row {
+    margin-bottom: 4px;
+}
+
+.simple-keyboard .hg-row .hg-button {
+    margin: 0 2px;
+}
+
+.simple-keyboard .hg-row:not(:last-child) {
+    margin-bottom: 4px;
+}

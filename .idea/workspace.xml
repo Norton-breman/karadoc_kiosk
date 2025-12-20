@@ -5,9 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="adapt viewport to 320x480px screen">
-      <change beforePath="$PROJECT_DIR$/static/css/player.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/player.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/viewer.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/viewer.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -103,7 +100,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766234054739</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="adapt viewport to 320x480px screen">
+      <option name="closed" value="true" />
+      <created>1766234724055</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1766234724055</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
