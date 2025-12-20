@@ -8,7 +8,7 @@
     <!-- Chargement de Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <!-- Simple-Keyboard -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='libs/simple-keyboard/index.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/keyboard.css') }}">
 </head>
 <body>
@@ -52,7 +52,7 @@
     </div>
 
     <!-- Simple-Keyboard JS -->
-    <script src="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.min.js"></script>
+    <script src="{{ url_for('static', filename='libs/simple-keyboard/index.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/keyboard.js') }}"></script>
 </body>
 </html>
