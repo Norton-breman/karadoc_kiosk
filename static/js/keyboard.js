@@ -1,20 +1,14 @@
 // Gestion du clavier virtuel
 (function() {
-    console.log('🎹 Script keyboard.js chargé');
     let keyboard = null;
     let currentInput = null;
 
     // Initialisation du clavier au chargement de la page
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('🎹 DOMContentLoaded - Initialisation du clavier');
-
         // Vérifier que Simple-Keyboard est disponible
         if (!window.SimpleKeyboard) {
-            console.error('❌ Simple-Keyboard n\'est pas chargé !');
             return;
         }
-
-        console.log('✅ Simple-Keyboard disponible');
 
         // Créer l'instance du clavier
         try {
@@ -51,19 +45,14 @@
                 }
             ]
         });
-
-            console.log('✅ Clavier initialisé avec succès');
         } catch (error) {
-            console.error('❌ Erreur lors de l\'initialisation du clavier:', error);
             return;
         }
 
         // Utiliser la délégation d'événements pour gérer les inputs
         // Cela fonctionne même pour les inputs ajoutés dynamiquement
         document.addEventListener('focusin', function(e) {
-            console.log('👆 Focus sur:', e.target.tagName, e.target.type);
             if (e.target.matches('input[type="text"], input[type="password"], input[type="search"]')) {
-                console.log('✅ Input détecté, affichage du clavier');
                 currentInput = e.target;
                 showKeyboard();
                 // Synchroniser le clavier avec la valeur actuelle
@@ -121,18 +110,13 @@
     }
 
     function showKeyboard() {
-        console.log('📱 Affichage du clavier');
         const container = document.getElementById('keyboard-container');
         if (container) {
             container.style.display = 'block';
-            console.log('✅ Clavier affiché');
-        } else {
-            console.error('❌ Conteneur du clavier non trouvé !');
         }
     }
 
     function hideKeyboard() {
-        console.log('🔒 Masquage du clavier');
         const container = document.getElementById('keyboard-container');
         if (container) {
             container.style.display = 'none';
