@@ -1,47 +1,43 @@
 """
-Gestionnaire Bluetooth utilisant pydbus pour interagir avec BlueZ via D-Bus
+Gestionnaire Bluetooth utilisant bluetoothctl en ligne de commande
 """
+import subprocess
 import time
-from pydbus import SystemBus
+import re
+import threading
 
 
 class BluetoothManager:
-    """Gestionnaire Bluetooth utilisant D-Bus"""
-
-    BLUEZ_SERVICE = 'org.bluez'
-    ADAPTER_INTERFACE = 'org.bluez.Adapter1'
-    DEVICE_INTERFACE = 'org.bluez.Device1'
+    """Gestionnaire Bluetooth utilisant bluetoothctl"""
 
     def __init__(self):
         """Initialise le gestionnaire Bluetooth"""
-        self.bus = SystemBus()
-        self.adapter_path = self._get_adapter_path()
-        self.adapter = None
-        if self.adapter_path:
-            self.adapter = self.bus.get(self.BLUEZ_SERVICE, self.adapter_path)
+        self.scan_process = None
+        self.scan_lock = threading.Lock()
 
-    def _get_adapter_path(self):
-        """Récupère le chemin D-Bus du premier adaptateur Bluetooth"""
+    def _run_bluetoothctl_command(self, command, timeout=10):
+        """
+        Exécute une commande bluetoothctl
+
+        Args:
+            command: Liste des arguments de la commande
+            timeout: Timeout en secondes
+
+        Returns:
+            Tuple (returncode, stdout, stderr)
+        """
         try:
-            manager = self.bus.get(self.BLUEZ_SERVICE, '/')
-            managed_objects = manager.GetManagedObjects()
-
-            for path, interfaces in managed_objects.items():
-                if self.ADAPTER_INTERFACE in interfaces:
-                    return path
-            return None
+            result = subprocess.run(
+                ['bluetoothctl'] + command,
+                capture_output=True,
+                text=True,
+                timeout=timeout
+            )
+            return result.returncode, result.stdout, result.stderr
+        except subprocess.TimeoutExpired:
+            return -1, "", "Timeout"
         except Exception as e:
-            print(f"Erreur lors de la récupération de l'adaptateur: {e}")
-            return None
-
-    def _get_device_objects(self):
-        """Récupère tous les objets device de BlueZ"""
-        try:
-            manager = self.bus.get(self.BLUEZ_SERVICE, '/')
-            return manager.GetManagedObjects()
-        except Exception as e:
-            print(f"Erreur lors de la récupération des devices: {e}")
-            return {}
+            return -1, "", str(e)
 
     def scan_devices(self, duration=5):
         """
@@ -53,49 +49,45 @@ class BluetoothManager:
         Returns:
             Liste de dictionnaires contenant les infos des périphériques
         """
-        if not self.adapter:
-            return []
-
         devices = []
 
         try:
-            # Démarrer le scan
-            self.adapter.StartDiscovery()
-            time.sleep(duration)
-            self.adapter.StopDiscovery()
+            with self.scan_lock:
+                # Démarrer le scan
+                subprocess.Popen(
+                    ['bluetoothctl', 'scan', 'on'],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
+                )
 
-            # Récupérer les devices découverts
-            managed_objects = self._get_device_objects()
+                # Attendre que le scan trouve des appareils
+                time.sleep(duration)
 
-            for path, interfaces in managed_objects.items():
-                if self.DEVICE_INTERFACE not in interfaces:
-                    continue
+                # Arrêter le scan
+                subprocess.run(
+                    ['bluetoothctl', 'scan', 'off'],
+                    capture_output=True,
+                    timeout=5
+                )
 
-                device_props = interfaces[self.DEVICE_INTERFACE]
+            # Récupérer la liste des appareils
+            returncode, stdout, stderr = self._run_bluetoothctl_command(['devices'])
 
-                # Filtrer les devices qui appartiennent à notre adaptateur
-                if not path.startswith(self.adapter_path):
-                    continue
+            if returncode != 0:
+                return []
 
-                device_info = {
-                    'mac': device_props.get('Address', 'Unknown'),
-                    'name': device_props.get('Name', device_props.get('Alias', 'Unknown')),
-                    'connected': device_props.get('Connected', False),
-                    'paired': device_props.get('Paired', False),
-                    'trusted': device_props.get('Trusted', False),
-                    'rssi': device_props.get('RSSI', None),
-                    'path': path,
-                    'device_type': 'unknown'
-                }
+            # Parser les appareils (format: "Device MAC_ADDRESS Name")
+            for line in stdout.strip().split('\n'):
+                if line.startswith('Device '):
+                    match = re.match(r'Device\s+([\w:]+)\s+(.+)', line)
+                    if match:
+                        mac = match.group(1)
+                        name = match.group(2)
 
-                # Déterminer le type de périphérique
-                uuids = device_props.get('UUIDs', [])
-                if any('110b' in uuid.lower() for uuid in uuids):  # A2DP
-                    device_info['device_type'] = 'audio'
-                elif any('1124' in uuid.lower() for uuid in uuids):  # HID
-                    device_info['device_type'] = 'input'
-
-                devices.append(device_info)
+                        # Obtenir les infos détaillées de l'appareil
+                        device_info = self._get_device_info(mac, name)
+                        if device_info:
+                            devices.append(device_info)
 
             return devices
 
@@ -103,10 +95,52 @@ class BluetoothManager:
             print(f"Erreur lors du scan Bluetooth: {e}")
             # Essayer d'arrêter le scan en cas d'erreur
             try:
-                self.adapter.StopDiscovery()
+                subprocess.run(['bluetoothctl', 'scan', 'off'], timeout=2)
             except:
                 pass
             return []
+
+    def _get_device_info(self, mac, name):
+        """
+        Récupère les informations détaillées d'un appareil
+
+        Args:
+            mac: Adresse MAC de l'appareil
+            name: Nom de l'appareil
+
+        Returns:
+            Dictionnaire avec les infos de l'appareil ou None
+        """
+        try:
+            returncode, stdout, stderr = self._run_bluetoothctl_command(['info', mac])
+
+            if returncode != 0:
+                return None
+
+            # Parser les informations
+            connected = 'Connected: yes' in stdout
+            paired = 'Paired: yes' in stdout
+            trusted = 'Trusted: yes' in stdout
+
+            # Déterminer le type d'appareil
+            device_type = 'unknown'
+            if 'UUID: Audio' in stdout or '0000110b' in stdout.lower():
+                device_type = 'audio'
+            elif 'UUID: Human Interface Device' in stdout or '00001124' in stdout.lower():
+                device_type = 'input'
+
+            return {
+                'mac': mac,
+                'name': name,
+                'connected': connected,
+                'paired': paired,
+                'trusted': trusted,
+                'device_type': device_type
+            }
+
+        except Exception as e:
+            print(f"Erreur lors de la récupération des infos de {mac}: {e}")
+            return None
 
     def pair_device(self, mac_address):
         """
@@ -118,33 +152,27 @@ class BluetoothManager:
         Returns:
             Tuple (success: bool, message: str)
         """
-        if not self.adapter:
-            return False, "Adaptateur Bluetooth non trouvé"
-
         try:
-            # Trouver le device
-            device_path = self._find_device_path(mac_address)
-            if not device_path:
-                return False, f"Périphérique {mac_address} non trouvé"
-
-            device = self.bus.get(self.BLUEZ_SERVICE, device_path)
-
             # Vérifier si déjà appairé
-            if device.Paired:
+            returncode, stdout, stderr = self._run_bluetoothctl_command(['info', mac_address])
+
+            if 'Paired: yes' in stdout:
                 # Faire confiance au périphérique
-                device.Trusted = True
+                self._run_bluetoothctl_command(['trust', mac_address])
                 return True, "Périphérique déjà appairé"
 
             # Appairer
-            device.Pair()
+            returncode, stdout, stderr = self._run_bluetoothctl_command(['pair', mac_address], timeout=30)
 
-            # Faire confiance au périphérique
-            device.Trusted = True
-
-            return True, "Appairage réussi"
+            if returncode == 0 or 'Pairing successful' in stdout:
+                # Faire confiance au périphérique
+                self._run_bluetoothctl_command(['trust', mac_address])
+                return True, "Appairage réussi"
+            else:
+                return False, f"Erreur d'appairage: {stderr}"
 
         except Exception as e:
-            return False, f"Erreur d'appairage: {str(e)}"
+            return False, f"Erreur: {str(e)}"
 
     def connect_device(self, mac_address):
         """
@@ -156,27 +184,23 @@ class BluetoothManager:
         Returns:
             Tuple (success: bool, message: str)
         """
-        if not self.adapter:
-            return False, "Adaptateur Bluetooth non trouvé"
-
         try:
-            device_path = self._find_device_path(mac_address)
-            if not device_path:
-                return False, f"Périphérique {mac_address} non trouvé"
-
-            device = self.bus.get(self.BLUEZ_SERVICE, device_path)
-
             # Vérifier si déjà connecté
-            if device.Connected:
+            returncode, stdout, stderr = self._run_bluetoothctl_command(['info', mac_address])
+
+            if 'Connected: yes' in stdout:
                 return True, "Périphérique déjà connecté"
 
             # Se connecter
-            device.Connect()
+            returncode, stdout, stderr = self._run_bluetoothctl_command(['connect', mac_address], timeout=30)
 
-            return True, "Connexion réussie"
+            if returncode == 0 or 'Connection successful' in stdout:
+                return True, "Connexion réussie"
+            else:
+                return False, f"Erreur de connexion: {stderr}"
 
         except Exception as e:
-            return False, f"Erreur de connexion: {str(e)}"
+            return False, f"Erreur: {str(e)}"
 
     def disconnect_device(self, mac_address):
         """
@@ -188,23 +212,16 @@ class BluetoothManager:
         Returns:
             Tuple (success: bool, message: str)
         """
-        if not self.adapter:
-            return False, "Adaptateur Bluetooth non trouvé"
-
         try:
-            device_path = self._find_device_path(mac_address)
-            if not device_path:
-                return False, f"Périphérique {mac_address} non trouvé"
+            returncode, stdout, stderr = self._run_bluetoothctl_command(['disconnect', mac_address])
 
-            device = self.bus.get(self.BLUEZ_SERVICE, device_path)
-
-            # Se déconnecter
-            device.Disconnect()
-
-            return True, "Déconnexion réussie"
+            if returncode == 0 or 'Successful disconnected' in stdout:
+                return True, "Déconnexion réussie"
+            else:
+                return False, f"Erreur de déconnexion: {stderr}"
 
         except Exception as e:
-            return False, f"Erreur de déconnexion: {str(e)}"
+            return False, f"Erreur: {str(e)}"
 
     def remove_device(self, mac_address):
         """
@@ -216,21 +233,16 @@ class BluetoothManager:
         Returns:
             Tuple (success: bool, message: str)
         """
-        if not self.adapter:
-            return False, "Adaptateur Bluetooth non trouvé"
-
         try:
-            device_path = self._find_device_path(mac_address)
-            if not device_path:
-                return False, f"Périphérique {mac_address} non trouvé"
+            returncode, stdout, stderr = self._run_bluetoothctl_command(['remove', mac_address])
 
-            # Supprimer le périphérique via l'adaptateur
-            self.adapter.RemoveDevice(device_path)
-
-            return True, "Périphérique supprimé"
+            if returncode == 0 or 'Device has been removed' in stdout:
+                return True, "Périphérique supprimé"
+            else:
+                return False, f"Erreur de suppression: {stderr}"
 
         except Exception as e:
-            return False, f"Erreur de suppression: {str(e)}"
+            return False, f"Erreur: {str(e)}"
 
     def get_connected_devices(self):
         """
@@ -239,72 +251,30 @@ class BluetoothManager:
         Returns:
             Liste de dictionnaires contenant les infos des périphériques connectés
         """
-        if not self.adapter:
-            return []
-
         connected_devices = []
 
         try:
-            managed_objects = self._get_device_objects()
+            # Récupérer tous les appareils
+            returncode, stdout, stderr = self._run_bluetoothctl_command(['devices'])
 
-            for path, interfaces in managed_objects.items():
-                if self.DEVICE_INTERFACE not in interfaces:
-                    continue
+            if returncode != 0:
+                return []
 
-                device_props = interfaces[self.DEVICE_INTERFACE]
+            # Parser les appareils
+            for line in stdout.strip().split('\n'):
+                if line.startswith('Device '):
+                    match = re.match(r'Device\s+([\w:]+)\s+(.+)', line)
+                    if match:
+                        mac = match.group(1)
+                        name = match.group(2)
 
-                # Filtrer les devices connectés
-                if not device_props.get('Connected', False):
-                    continue
-
-                # Filtrer les devices qui appartiennent à notre adaptateur
-                if not path.startswith(self.adapter_path):
-                    continue
-
-                device_info = {
-                    'mac': device_props.get('Address', 'Unknown'),
-                    'name': device_props.get('Name', device_props.get('Alias', 'Unknown')),
-                    'device_type': 'unknown'
-                }
-
-                # Déterminer le type de périphérique
-                uuids = device_props.get('UUIDs', [])
-                if any('110b' in uuid.lower() for uuid in uuids):  # A2DP
-                    device_info['device_type'] = 'audio'
-                elif any('1124' in uuid.lower() for uuid in uuids):  # HID
-                    device_info['device_type'] = 'input'
-
-                connected_devices.append(device_info)
+                        # Vérifier si connecté
+                        device_info = self._get_device_info(mac, name)
+                        if device_info and device_info['connected']:
+                            connected_devices.append(device_info)
 
             return connected_devices
 
         except Exception as e:
-            print(f"Erreur lors de la récupération des devices connectés: {e}")
+            print(f"Erreur lors de la récupération des appareils connectés: {e}")
             return []
-
-    def _find_device_path(self, mac_address):
-        """
-        Trouve le chemin D-Bus d'un périphérique par son adresse MAC
-
-        Args:
-            mac_address: Adresse MAC du périphérique
-
-        Returns:
-            Chemin D-Bus du périphérique ou None
-        """
-        try:
-            managed_objects = self._get_device_objects()
-
-            for path, interfaces in managed_objects.items():
-                if self.DEVICE_INTERFACE not in interfaces:
-                    continue
-
-                device_props = interfaces[self.DEVICE_INTERFACE]
-                if device_props.get('Address', '').upper() == mac_address.upper():
-                    return path
-
-            return None
-
-        except Exception as e:
-            print(f"Erreur lors de la recherche du device: {e}")
-            return None
