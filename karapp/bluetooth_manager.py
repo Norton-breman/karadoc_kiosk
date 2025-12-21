@@ -41,7 +41,7 @@ class BluetoothManager:
 
     def scan_devices(self, duration=5):
         """
-        Scanne les périphériques Bluetooth disponibles
+        Scanne les périphériques Bluetooth disponibles (Classic + BLE)
 
         Args:
             duration: Durée du scan en secondes (défaut: 5)
@@ -49,53 +49,94 @@ class BluetoothManager:
         Returns:
             Liste de dictionnaires contenant les infos des périphériques
         """
-        devices = []
+        devices_dict = {}
 
         try:
             with self.scan_lock:
-                # Démarrer le scan
+                # 1. Scanner les appareils Bluetooth LE avec hcitool
+                print("Scan BLE avec hcitool...")
+                lescan_process = subprocess.Popen(
+                    ['sudo', 'hcitool', 'lescan'],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.DEVNULL,
+                    text=True
+                )
+
+                # 2. Scanner les appareils Bluetooth Classic avec bluetoothctl
+                print("Scan Classic avec bluetoothctl...")
                 subprocess.Popen(
                     ['bluetoothctl', 'scan', 'on'],
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL
                 )
 
-                # Attendre que le scan trouve des appareils
+                # Attendre que les scans trouvent des appareils
                 time.sleep(duration)
 
-                # Arrêter le scan
+                # Arrêter le scan BLE
+                lescan_process.terminate()
+                try:
+                    lescan_stdout, _ = lescan_process.communicate(timeout=2)
+                except:
+                    lescan_process.kill()
+                    lescan_stdout = ""
+
+                # Arrêter le scan Classic
                 subprocess.run(
                     ['bluetoothctl', 'scan', 'off'],
                     capture_output=True,
                     timeout=5
                 )
 
-            # Récupérer la liste des appareils
+            # Parser les résultats du scan BLE (hcitool lescan)
+            for line in lescan_stdout.split('\n'):
+                # Format: "MAC_ADDRESS Name" ou "MAC_ADDRESS (unknown)"
+                match = re.match(r'([\w:]{17})\s+(.+)', line.strip())
+                if match:
+                    mac = match.group(1)
+                    name = match.group(2)
+                    if name and name != '(unknown)' and mac not in devices_dict:
+                        devices_dict[mac] = {'mac': mac, 'name': name, 'type': 'BLE'}
+
+            # Récupérer aussi la liste des appareils via bluetoothctl
             returncode, stdout, stderr = self._run_bluetoothctl_command(['devices'])
 
-            if returncode != 0:
-                return []
+            if returncode == 0:
+                # Parser les appareils (format: "Device MAC_ADDRESS Name")
+                for line in stdout.strip().split('\n'):
+                    if line.startswith('Device '):
+                        match = re.match(r'Device\s+([\w:]+)\s+(.+)', line)
+                        if match:
+                            mac = match.group(1)
+                            name = match.group(2)
+                            if mac not in devices_dict:
+                                devices_dict[mac] = {'mac': mac, 'name': name, 'type': 'Classic'}
 
-            # Parser les appareils (format: "Device MAC_ADDRESS Name")
-            for line in stdout.strip().split('\n'):
-                if line.startswith('Device '):
-                    match = re.match(r'Device\s+([\w:]+)\s+(.+)', line)
-                    if match:
-                        mac = match.group(1)
-                        name = match.group(2)
-
-                        # Obtenir les infos détaillées de l'appareil
-                        device_info = self._get_device_info(mac, name)
-                        if device_info:
-                            devices.append(device_info)
+            # Obtenir les infos détaillées pour chaque appareil
+            devices = []
+            for mac, info in devices_dict.items():
+                device_info = self._get_device_info(mac, info['name'])
+                if device_info:
+                    devices.append(device_info)
+                else:
+                    # Si bluetoothctl ne connaît pas l'appareil, retourner les infos basiques
+                    devices.append({
+                        'mac': mac,
+                        'name': info['name'],
+                        'connected': False,
+                        'paired': False,
+                        'trusted': False,
+                        'device_type': 'audio' if 'BLE' in info['type'] else 'unknown'
+                    })
 
             return devices
 
         except Exception as e:
             print(f"Erreur lors du scan Bluetooth: {e}")
-            # Essayer d'arrêter le scan en cas d'erreur
+            # Essayer d'arrêter les scans en cas d'erreur
             try:
                 subprocess.run(['bluetoothctl', 'scan', 'off'], timeout=2)
+                subprocess.run(['sudo', 'pkill', 'hcitool'], timeout=2)
             except:
                 pass
             return []
