@@ -54,13 +54,15 @@ class BluetoothManager:
         try:
             with self.scan_lock:
                 # 1. Scanner les appareils Bluetooth LE avec hcitool
+                print("=== DEBUT SCAN BLUETOOTH ===")
                 print("Scan BLE avec hcitool...")
                 lescan_process = subprocess.Popen(
                     ['sudo', 'hcitool', 'lescan'],
                     stdout=subprocess.PIPE,
-                    stderr=subprocess.DEVNULL,
+                    stderr=subprocess.PIPE,
                     text=True
                 )
+                print(f"Process hcitool lancé: PID {lescan_process.pid}")
 
                 # 2. Scanner les appareils Bluetooth Classic avec bluetoothctl
                 print("Scan Classic avec bluetoothctl...")
@@ -74,12 +76,17 @@ class BluetoothManager:
                 time.sleep(duration)
 
                 # Arrêter le scan BLE
+                print("Arrêt du scan BLE...")
                 lescan_process.terminate()
                 try:
-                    lescan_stdout, _ = lescan_process.communicate(timeout=2)
+                    lescan_stdout, lescan_stderr = lescan_process.communicate(timeout=2)
+                    print(f"Sortie hcitool: {len(lescan_stdout)} caractères")
+                    if lescan_stderr:
+                        print(f"Erreurs hcitool: {lescan_stderr}")
                 except:
                     lescan_process.kill()
                     lescan_stdout = ""
+                    print("Timeout hcitool, processus tué")
 
                 # Arrêter le scan Classic
                 subprocess.run(
@@ -113,6 +120,10 @@ class BluetoothManager:
                                 devices_dict[mac] = {'mac': mac, 'name': name, 'type': 'Classic'}
 
             # Obtenir les infos détaillées pour chaque appareil
+            print(f"Appareils trouvés dans dictionnaire: {len(devices_dict)}")
+            for mac, info in devices_dict.items():
+                print(f"  - {mac}: {info['name']} ({info['type']})")
+
             devices = []
             for mac, info in devices_dict.items():
                 device_info = self._get_device_info(mac, info['name'])
@@ -129,6 +140,7 @@ class BluetoothManager:
                         'device_type': 'audio' if 'BLE' in info['type'] else 'unknown'
                     })
 
+            print(f"=== FIN SCAN: {len(devices)} appareils retournés ===")
             return devices
 
         except Exception as e:

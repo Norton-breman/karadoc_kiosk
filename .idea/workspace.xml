@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="change wifi management to conman instead of network-manager (for use under dietpi)">
+    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="fix blutooth connection">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karapp/bluetooth_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/karapp/bluetooth_manager.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -253,7 +252,23 @@
       <option name="project" value="LOCAL" />
       <updated>1766242885664</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="fix blutooth connection">
+      <option name="closed" value="true" />
+      <created>1766303737418</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1766303737418</updated>
+    </task>
+    <task id="LOCAL-00024" summary="fix blutooth connection">
+      <option name="closed" value="true" />
+      <created>1766330961818</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1766330961818</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -263,7 +278,8 @@
     <MESSAGE value="adjust cards size" />
     <MESSAGE value="adjust all size to 320 px" />
     <MESSAGE value="change wifi management to conman instead of network-manager (for use under dietpi)" />
-    <option name="LAST_COMMIT_MESSAGE" value="change wifi management to conman instead of network-manager (for use under dietpi)" />
+    <MESSAGE value="fix blutooth connection" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix blutooth connection" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
