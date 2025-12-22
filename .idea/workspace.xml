@@ -4,17 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="&#10;wifi activate">
-      <change afterPath="$PROJECT_DIR$/static/libs/fontawesome/all.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/libs/fontawesome/webfonts/fa-brands-400.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/libs/fontawesome/webfonts/fa-regular-400.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/libs/fontawesome/webfonts/fa-solid-900.woff2" afterDir="false" />
+    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="store emoticon locally">
+      <change afterPath="$PROJECT_DIR$/splash.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/player.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/player.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/bluetooth.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bluetooth.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/files.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/files.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/wifi.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/wifi.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -325,7 +317,31 @@
       <option name="project" value="LOCAL" />
       <updated>1766392273521</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="store emoticon locally">
+      <option name="closed" value="true" />
+      <created>1766393141253</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1766393141253</updated>
+    </task>
+    <task id="LOCAL-00032" summary="store emoticon locally">
+      <option name="closed" value="true" />
+      <created>1766393411811</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1766393411811</updated>
+    </task>
+    <task id="LOCAL-00033" summary="store emoticon locally">
+      <option name="closed" value="true" />
+      <created>1766393626897</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1766393626897</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -350,7 +366,8 @@
     <MESSAGE value="debug blutooth connection" />
     <MESSAGE value="add activate wifi button" />
     <MESSAGE value="&#10;wifi activate" />
-    <option name="LAST_COMMIT_MESSAGE" value="&#10;wifi activate" />
+    <MESSAGE value="store emoticon locally" />
+    <option name="LAST_COMMIT_MESSAGE" value="store emoticon locally" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
