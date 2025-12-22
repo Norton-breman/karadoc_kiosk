@@ -34,7 +34,7 @@
     </div>
     {% endif %}
     
-    {% if error %}connections.connections.
+    {% if error %}
     <div style="background: #f582ae; color: white; padding: 1em; margin: 1em auto; width: 300px; border-radius: 1em; text-align: center;">
         <strong>{{ error }}</strong>
     </div>
@@ -55,7 +55,7 @@
             <div class="wifi-network" onclick="connectToWifi('{{ network.ssid }}', {{ network.secured|tojson }})">
                 <div class="network-info">
                     <div class="network-name">
-                        {% if network.secured %}🔒{% else %}📶{% endif %} 
+                        {% if network.secured %}<i class="fas fa-lock"></i>{% else %}<i class="fas fa-signal"></i>{% endif %}
                         {{ network.ssid }}
                     </div>
                     <div class="network-details">

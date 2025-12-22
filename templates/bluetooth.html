@@ -18,12 +18,12 @@
     <!-- Appareils connectés -->
     {% if connected_devices %}
     <div class="bluetooth-section">
-        <h3>🟢 Appareils connectés</h3>
+        <h3><i class="fas fa-circle" style="color: #06d6a0;"></i> Appareils connectés</h3>
         {% for device in connected_devices %}
         <div class="bluetooth-device connected">
             <div class="device-info">
                 <div class="device-name">
-                    {% if device.device_type == 'audio' %}🎧{% else %}📱{% endif %}
+                    {% if device.device_type == 'audio' %}<i class="fas fa-headphones"></i>{% else %}<i class="fas fa-mobile-alt"></i>{% endif %}
                     {{ device.name }}
                 </div>
                 <div class="device-details">
@@ -47,7 +47,7 @@
     
     <!-- Scan et appareils disponibles -->
     <div class="bluetooth-section">
-        <h3>🔍 Appareils disponibles <a href="{{ url_for('bluetooth.bluetooth_settings') }}" style="font-size: 0.8em;">(Rafraîchir)</a></h3>
+        <h3><i class="fas fa-search"></i> Appareils disponibles <a href="{{ url_for('bluetooth.bluetooth_settings') }}" style="font-size: 0.8em;">(Rafraîchir)</a></h3>
         
         {% if devices %}
             {% for device in devices %}
@@ -55,7 +55,7 @@
             <div class="bluetooth-device">
                 <div class="device-info">
                     <div class="device-name">
-                        {% if device.device_type == 'audio' %}🎧{% elif device.device_type == 'input' %}⌨️{% else %}📱{% endif %}
+                        {% if device.device_type == 'audio' %}<i class="fas fa-headphones"></i>{% elif device.device_type == 'input' %}<i class="fas fa-keyboard"></i>{% else %}<i class="fas fa-mobile-alt"></i>{% endif %}
                         {{ device.name }}
                         {% if device.paired %}<span class="paired-badge">Apparié</span>{% endif %}
                     </div>

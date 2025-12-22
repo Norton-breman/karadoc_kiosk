@@ -152,7 +152,7 @@ function togglePlayPause() {
 // Mettre à jour le bouton play/pause
 function updatePlayPauseButton() {
     const btn = document.getElementById('playPauseBtn');
-    btn.textContent = isPlaying ? '⏸' : '▶️';
+    btn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
 }
 
 // Piste précédente
