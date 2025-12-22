@@ -14,6 +14,7 @@ class BluetoothManager:
         """Initialise le gestionnaire Bluetooth"""
         self.scan_process = None
         self.scan_lock = threading.Lock()
+        self.debug_logs = []
 
     def _run_bluetoothctl_command(self, command, timeout=10):
         """
@@ -50,22 +51,23 @@ class BluetoothManager:
             Liste de dictionnaires contenant les infos des périphériques
         """
         devices_dict = {}
+        self.debug_logs = []
 
         try:
             with self.scan_lock:
                 # 1. Scanner les appareils Bluetooth LE avec hcitool
-                print("=== DEBUT SCAN BLUETOOTH ===")
-                print("Scan BLE avec hcitool...")
+                self.debug_logs.append("=== DEBUT SCAN BLUETOOTH ===")
+                self.debug_logs.append("Scan BLE avec hcitool...")
                 lescan_process = subprocess.Popen(
                     ['sudo', 'hcitool', 'lescan'],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     text=True
                 )
-                print(f"Process hcitool lancé: PID {lescan_process.pid}")
+                self.debug_logs.append(f"Process hcitool lancé: PID {lescan_process.pid}")
 
                 # 2. Scanner les appareils Bluetooth Classic avec bluetoothctl
-                print("Scan Classic avec bluetoothctl...")
+                self.debug_logs.append("Scan Classic avec bluetoothctl...")
                 subprocess.Popen(
                     ['bluetoothctl', 'scan', 'on'],
                     stdout=subprocess.DEVNULL,
@@ -73,20 +75,21 @@ class BluetoothManager:
                 )
 
                 # Attendre que les scans trouvent des appareils
+                self.debug_logs.append(f"Attente de {duration} secondes...")
                 time.sleep(duration)
 
                 # Arrêter le scan BLE
-                print("Arrêt du scan BLE...")
+                self.debug_logs.append("Arrêt du scan BLE...")
                 lescan_process.terminate()
                 try:
                     lescan_stdout, lescan_stderr = lescan_process.communicate(timeout=2)
-                    print(f"Sortie hcitool: {len(lescan_stdout)} caractères")
+                    self.debug_logs.append(f"Sortie hcitool: {len(lescan_stdout)} caractères")
                     if lescan_stderr:
-                        print(f"Erreurs hcitool: {lescan_stderr}")
+                        self.debug_logs.append(f"Erreurs hcitool: {lescan_stderr}")
                 except:
                     lescan_process.kill()
                     lescan_stdout = ""
-                    print("Timeout hcitool, processus tué")
+                    self.debug_logs.append("Timeout hcitool, processus tué")
 
                 # Arrêter le scan Classic
                 subprocess.run(
@@ -120,9 +123,9 @@ class BluetoothManager:
                                 devices_dict[mac] = {'mac': mac, 'name': name, 'type': 'Classic'}
 
             # Obtenir les infos détaillées pour chaque appareil
-            print(f"Appareils trouvés dans dictionnaire: {len(devices_dict)}")
+            self.debug_logs.append(f"Appareils trouvés dans dictionnaire: {len(devices_dict)}")
             for mac, info in devices_dict.items():
-                print(f"  - {mac}: {info['name']} ({info['type']})")
+                self.debug_logs.append(f"  - {mac}: {info['name']} ({info['type']})")
 
             devices = []
             for mac, info in devices_dict.items():
@@ -140,11 +143,13 @@ class BluetoothManager:
                         'device_type': 'audio' if 'BLE' in info['type'] else 'unknown'
                     })
 
-            print(f"=== FIN SCAN: {len(devices)} appareils retournés ===")
+            self.debug_logs.append(f"=== FIN SCAN: {len(devices)} appareils retournés ===")
             return devices
 
         except Exception as e:
-            print(f"Erreur lors du scan Bluetooth: {e}")
+            self.debug_logs.append(f"ERREUR lors du scan Bluetooth: {e}")
+            import traceback
+            self.debug_logs.append(traceback.format_exc())
             # Essayer d'arrêter les scans en cas d'erreur
             try:
                 subprocess.run(['bluetoothctl', 'scan', 'off'], timeout=2)

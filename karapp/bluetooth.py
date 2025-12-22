@@ -7,7 +7,8 @@ _bt_manager = None
 def bluetooth_settings():
     devices = bluetooth_scan_devices()
     connected_devices = get_connected_bluetooth_devices()
-    return render_template('bluetooth.html', devices=devices, connected_devices=connected_devices)
+    debug_logs = get_debug_logs()
+    return render_template('bluetooth.html', devices=devices, connected_devices=connected_devices, debug_logs=debug_logs)
 
 
 @bluetooth_bp.route('/bluetooth/pair', methods=['POST'])
@@ -131,3 +132,10 @@ def bluetooth_remove_device(mac_address):
     if manager is None:
         return False, "Gestionnaire Bluetooth non disponible"
     return manager.remove_device(mac_address)
+
+def get_debug_logs():
+    """Récupère les logs de debug du scan Bluetooth"""
+    manager = _get_bt_manager()
+    if manager is None:
+        return ["Gestionnaire Bluetooth non disponible"]
+    return getattr(manager, 'debug_logs', [])

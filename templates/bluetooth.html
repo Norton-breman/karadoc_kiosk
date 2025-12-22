@@ -2,6 +2,16 @@
 {% block title %}Paramètres Bluetooth{% endblock %}
 {% block content %}
     <h2><i class="fab fa-bluetooth"></i> Paramètres Bluetooth</h2>
+
+    <!-- Debug logs -->
+    {% if debug_logs %}
+    <div style="background: #f0f0f0; color: #000; padding: 10px; margin: 10px auto; max-width: 300px; border-radius: 5px; font-size: 0.8em; text-align: left; font-family: monospace; overflow-x: auto;">
+        <strong>Debug Logs:</strong>
+        {% for log in debug_logs %}
+        <div>{{ log }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
     
     {% if success %}
     <div style="background: #06d6a0; color: white; padding: 1em; margin: 1em auto; width: 300px; border-radius: 1em; text-align: center;">
