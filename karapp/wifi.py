@@ -39,12 +39,15 @@ def wifi_toggle():
 
     if action == 'enable':
         success, message = enable_wifi()
+        # Attendre un peu plus après activation avant de scanner
+        if success:
+            time.sleep(2)
     elif action == 'disable':
         success, message = disable_wifi()
     else:
         return redirect(url_for('wifi.wifi_settings'))
 
-    networks = scan_wifi_networks() if success else []
+    networks = scan_wifi_networks() if success and action == 'enable' else []
     current_wifi = get_current_wifi()
     wifi_enabled = is_wifi_enabled()
 
@@ -265,12 +268,14 @@ def enable_wifi():
                               capture_output=True, text=True, timeout=10)
 
         if result.returncode == 0:
-            # Attendre un peu que l'interface soit prête
-            time.sleep(2)
+            # Attendre que l'interface soit prête
+            time.sleep(3)
             # Relancer wpa_supplicant pour qu'il se reconnecte
             subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'reconfigure'],
                          capture_output=True, text=True, timeout=5)
-            return True, "WiFi activé"
+            # Attendre encore un peu pour la connexion
+            time.sleep(2)
+            return True, "WiFi activé - Reconnexion en cours..."
         else:
             return False, f"Erreur d'activation: {result.stderr}"
     except Exception as e:

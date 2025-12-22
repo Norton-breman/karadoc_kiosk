@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="debug blutooth connection">
+    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="add activate wifi button">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karapp/bluetooth_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/karapp/bluetooth_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karapp/wifi.py" beforeDir="false" afterPath="$PROJECT_DIR$/karapp/wifi.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -293,7 +293,23 @@
       <option name="project" value="LOCAL" />
       <updated>1766389768982</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="debug blutooth connection">
+      <option name="closed" value="true" />
+      <created>1766390204930</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1766390204930</updated>
+    </task>
+    <task id="LOCAL-00029" summary="add activate wifi button">
+      <option name="closed" value="true" />
+      <created>1766391775771</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1766391775771</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -305,7 +321,8 @@
     <MESSAGE value="change wifi management to conman instead of network-manager (for use under dietpi)" />
     <MESSAGE value="fix blutooth connection" />
     <MESSAGE value="debug blutooth connection" />
-    <option name="LAST_COMMIT_MESSAGE" value="debug blutooth connection" />
+    <MESSAGE value="add activate wifi button" />
+    <option name="LAST_COMMIT_MESSAGE" value="add activate wifi button" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
