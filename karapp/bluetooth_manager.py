@@ -57,9 +57,9 @@ class BluetoothManager:
             with self.scan_lock:
                 # 1. Scanner les appareils Bluetooth LE avec hcitool
                 self.debug_logs.append("=== DEBUT SCAN BLUETOOTH ===")
-                self.debug_logs.append("Scan BLE avec hcitool...")
+                self.debug_logs.append("Scan BLE avec hcitool (sans sudo)...")
                 lescan_process = subprocess.Popen(
-                    ['sudo', 'hcitool', 'lescan'],
+                    ['hcitool', 'lescan'],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     text=True
