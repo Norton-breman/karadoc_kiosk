@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 import subprocess
 import re
+import time
 
 connection_bp = Blueprint("wifi", __name__)
 
@@ -10,7 +11,8 @@ WIFI_INTERFACE = "wlan0"
 def wifi_settings():
     networks = scan_wifi_networks()
     current_wifi = get_current_wifi()
-    return render_template('wifi.html', networks=networks, current_wifi=current_wifi)
+    wifi_enabled = is_wifi_enabled()
+    return render_template('wifi.html', networks=networks, current_wifi=current_wifi, wifi_enabled=wifi_enabled)
 
 @connection_bp.route('/wifi/connect', methods=['POST'])
 def wifi_connect():
@@ -27,7 +29,29 @@ def wifi_connect():
     else:
         networks = scan_wifi_networks()
         current_wifi = get_current_wifi()
-        return render_template('wifi.html', networks=networks, current_wifi=current_wifi, error=message)
+        wifi_enabled = is_wifi_enabled()
+        return render_template('wifi.html', networks=networks, current_wifi=current_wifi, wifi_enabled=wifi_enabled, error=message)
+
+@connection_bp.route('/wifi/toggle', methods=['POST'])
+def wifi_toggle():
+    """Active ou désactive le WiFi"""
+    action = request.form.get('action')  # 'enable' ou 'disable'
+
+    if action == 'enable':
+        success, message = enable_wifi()
+    elif action == 'disable':
+        success, message = disable_wifi()
+    else:
+        return redirect(url_for('wifi.wifi_settings'))
+
+    networks = scan_wifi_networks() if success else []
+    current_wifi = get_current_wifi()
+    wifi_enabled = is_wifi_enabled()
+
+    if success:
+        return render_template('wifi.html', networks=networks, current_wifi=current_wifi, wifi_enabled=wifi_enabled, success=message)
+    else:
+        return render_template('wifi.html', networks=networks, current_wifi=current_wifi, wifi_enabled=wifi_enabled, error=message)
 
 def scan_wifi_networks():
     """Scanne les réseaux WiFi disponibles avec iwlist"""
@@ -217,3 +241,51 @@ def get_current_wifi():
         return None
     except Exception:
         return None
+
+def is_wifi_enabled():
+    """Vérifie si le WiFi est activé"""
+    try:
+        # Vérifier l'état de l'interface avec ip link
+        result = subprocess.run(['ip', 'link', 'show', WIFI_INTERFACE],
+                              capture_output=True, text=True, timeout=5)
+
+        if result.returncode == 0:
+            # Chercher "state UP" dans la sortie
+            return 'state UP' in result.stdout
+
+        return False
+    except Exception:
+        return False
+
+def enable_wifi():
+    """Active le WiFi"""
+    try:
+        # Activer l'interface
+        result = subprocess.run(['sudo', 'ip', 'link', 'set', WIFI_INTERFACE, 'up'],
+                              capture_output=True, text=True, timeout=10)
+
+        if result.returncode == 0:
+            # Attendre un peu que l'interface soit prête
+            time.sleep(2)
+            # Relancer wpa_supplicant pour qu'il se reconnecte
+            subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'reconfigure'],
+                         capture_output=True, text=True, timeout=5)
+            return True, "WiFi activé"
+        else:
+            return False, f"Erreur d'activation: {result.stderr}"
+    except Exception as e:
+        return False, f"Erreur: {str(e)}"
+
+def disable_wifi():
+    """Désactive le WiFi"""
+    try:
+        # Désactiver l'interface
+        result = subprocess.run(['sudo', 'ip', 'link', 'set', WIFI_INTERFACE, 'down'],
+                              capture_output=True, text=True, timeout=10)
+
+        if result.returncode == 0:
+            return True, "WiFi désactivé"
+        else:
+            return False, f"Erreur de désactivation: {result.stderr}"
+    except Exception as e:
+        return False, f"Erreur: {str(e)}"

@@ -58,9 +58,16 @@ class BluetoothManager:
                 # 1. Scanner les appareils Bluetooth LE avec hcitool
                 self.debug_logs.append("=== DEBUT SCAN BLUETOOTH ===")
                 self.debug_logs.append("Scan BLE avec hcitool (avec sudo)...")
+
+                # Utiliser un fichier temporaire pour capturer la sortie de hcitool
+                import tempfile
+                lescan_output_file = tempfile.NamedTemporaryFile(mode='w+', delete=False)
+                lescan_output_path = lescan_output_file.name
+                lescan_output_file.close()
+
                 lescan_process = subprocess.Popen(
                     ['sudo', 'hcitool', 'lescan'],
-                    stdout=subprocess.PIPE,
+                    stdout=open(lescan_output_path, 'w'),
                     stderr=subprocess.PIPE,
                     text=True
                 )
@@ -81,15 +88,22 @@ class BluetoothManager:
                 # Arrêter le scan BLE
                 self.debug_logs.append("Arrêt du scan BLE...")
                 lescan_process.terminate()
+                time.sleep(0.5)  # Laisser le temps d'écrire dans le fichier
+                lescan_process.kill()
+
+                # Lire la sortie du fichier
                 try:
-                    lescan_stdout, lescan_stderr = lescan_process.communicate(timeout=2)
+                    with open(lescan_output_path, 'r') as f:
+                        lescan_stdout = f.read()
+                    import os
+                    os.unlink(lescan_output_path)
                     self.debug_logs.append(f"Sortie hcitool: {len(lescan_stdout)} caractères")
-                    if lescan_stderr:
-                        self.debug_logs.append(f"Erreurs hcitool: {lescan_stderr}")
-                except:
-                    lescan_process.kill()
+                    if lescan_stdout:
+                        lines = lescan_stdout.strip().split('\n')
+                        self.debug_logs.append(f"Nombre de lignes: {len(lines)}")
+                except Exception as e:
                     lescan_stdout = ""
-                    self.debug_logs.append("Timeout hcitool, processus tué")
+                    self.debug_logs.append(f"Erreur lecture fichier: {e}")
 
                 # Arrêter le scan Classic
                 subprocess.run(

@@ -2,7 +2,32 @@
 {% block title %}Paramètres WiFi{% endblock %}
 {% block content %}
     <h2><i class="fas fa-wifi"></i> Paramètres WiFi</h2>
-    
+
+    <!-- État et bouton WiFi -->
+    <div style="text-align: center; margin: 1em auto;">
+        {% if wifi_enabled %}
+        <div style="background: #06d6a0; color: white; padding: 0.5em; margin: 0.5em auto; width: 250px; border-radius: 0.5em;">
+            <i class="fas fa-wifi"></i> WiFi activé
+        </div>
+        <form method="POST" action="{{ url_for('wifi.wifi_toggle') }}" style="display: inline;">
+            <input type="hidden" name="action" value="disable">
+            <button type="submit" style="background: #f582ae; color: white; border: none; padding: 0.7em 1.5em; border-radius: 0.5em; cursor: pointer; font-size: 1em;">
+                Désactiver le WiFi
+            </button>
+        </form>
+        {% else %}
+        <div style="background: #f582ae; color: white; padding: 0.5em; margin: 0.5em auto; width: 250px; border-radius: 0.5em;">
+            <i class="fas fa-wifi-slash"></i> WiFi désactivé
+        </div>
+        <form method="POST" action="{{ url_for('wifi.wifi_toggle') }}" style="display: inline;">
+            <input type="hidden" name="action" value="enable">
+            <button type="submit" style="background: #06d6a0; color: white; border: none; padding: 0.7em 1.5em; border-radius: 0.5em; cursor: pointer; font-size: 1em;">
+                Activer le WiFi
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
     {% if current_wifi %}
     <div style="background: #06d6a0; color: white; padding: 1em; margin: 1em auto; width: 300px; border-radius: 1em; text-align: center;">
         <strong>Connecté à: {{ current_wifi }}</strong>
@@ -14,10 +39,17 @@
         <strong>{{ error }}</strong>
     </div>
     {% endif %}
-    
+
+    {% if success %}
+    <div style="background: #06d6a0; color: white; padding: 1em; margin: 1em auto; width: 300px; border-radius: 1em; text-align: center;">
+        <strong>{{ success }}</strong>
+    </div>
+    {% endif %}
+
+    {% if wifi_enabled %}
     <div class="wifi-networks">
         <h3>Réseaux disponibles</h3>
-        
+
         {% if networks %}
             {% for network in networks %}
             <div class="wifi-network" onclick="connectToWifi('{{ network.ssid }}', {{ network.secured|tojson }})">
@@ -42,6 +74,9 @@
             <p>Aucun réseau WiFi trouvé. <a href="{{ url_for('wifi.wifi_settings') }}">Rafraîchir</a></p>
         {% endif %}
     </div>
+    {% else %}
+    <p style="text-align: center; color: #666; margin-top: 2em;">Activez le WiFi pour voir les réseaux disponibles</p>
+    {% endif %}
 
 <!-- Modal pour saisir le mot de passe -->
 <div id="passwordModal" class="photo-modal" style="display: none;">
