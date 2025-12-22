@@ -6,7 +6,7 @@
     {% for t in searchtools %}
     <h3> {{ t }}</h3>
     <form action="{{ url_for('podcast_search') }}" method="post">
-      <input type="text" name="podcast_name" placeholder="la discomobile" required>
+      <input type="text" name="podcast_name" placeholder="la discomobile" required autocomplete="off">
       <input type="hidden" name="searchtool" value="{{ t }}">
       <button type="submit">Rechercher</button>
     </form>
