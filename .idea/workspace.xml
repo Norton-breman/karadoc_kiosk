@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="store emoticon locally">
-      <change afterPath="$PROJECT_DIR$/splash.png" afterDir="false" />
+    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="add splash screen">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/wifi.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/wifi.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -341,7 +341,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766393626897</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="add splash screen">
+      <option name="closed" value="true" />
+      <created>1766396156343</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1766396156343</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -367,7 +375,8 @@
     <MESSAGE value="add activate wifi button" />
     <MESSAGE value="&#10;wifi activate" />
     <MESSAGE value="store emoticon locally" />
-    <option name="LAST_COMMIT_MESSAGE" value="store emoticon locally" />
+    <MESSAGE value="add splash screen" />
+    <option name="LAST_COMMIT_MESSAGE" value="add splash screen" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
