@@ -79,13 +79,13 @@
     {% endif %}
 
 <!-- Modal pour saisir le mot de passe -->
-<div id="passwordModal" class="photo-modal" style="display: none;">
-    <div style="background: white; color: #001858; padding: 2em; border-radius: 1em; margin: 20vh auto; width: 300px; position: relative;">
+<div id="passwordModal" style="display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 320px; height: 480px; background-color: rgba(0, 0, 0, 0.7);">
+    <div style="background: white; color: #001858; padding: 2em; border-radius: 1em; margin: 10vh auto; width: 280px; position: relative; z-index: 1001;">
         <h3 style="margin-top: 0;">Se connecter à <span id="networkName"></span></h3>
         <form method="POST" action="{{ url_for('wifi.wifi_connect') }}">
             <input type="hidden" id="ssidInput" name="ssid" value="">
             <label for="password">Mot de passe :</label><br>
-            <input type="password" id="passwordInput" name="password" style="width: 100%; padding: 0.5em; margin: 0.5em 0; box-sizing: border-box;">
+            <input type="password" id="passwordInput" name="password" inputmode="none" style="width: 100%; padding: 0.5em; margin: 0.5em 0; box-sizing: border-box;">
             <br>
             <button type="submit" style="background: #06d6a0; color: white; border: none; padding: 0.5em 1em; border-radius: 0.5em; cursor: pointer; margin-right: 0.5em;">Se connecter</button>
             <button type="button" onclick="closePasswordModal()" style="background: #f582ae; color: white; border: none; padding: 0.5em 1em; border-radius: 0.5em; cursor: pointer;">Annuler</button>
@@ -124,6 +124,17 @@ function closePasswordModal() {
 // Fermer le modal en cliquant à côté
 document.getElementById('passwordModal').addEventListener('click', function(e) {
     if (e.target === this) closePasswordModal();
+});
+
+// S'assurer que le clavier s'affiche quand on clique sur l'input
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('passwordInput');
+    if (passwordInput) {
+        passwordInput.addEventListener('click', function() {
+            // Forcer le focus pour déclencher le clavier
+            this.focus();
+        });
+    }
 });
 </script>
 
