@@ -113,6 +113,12 @@
         const container = document.getElementById('keyboard-container');
         if (container) {
             container.style.display = 'block';
+            // Faire remonter l'input pour qu'il soit visible au-dessus du clavier
+            if (currentInput) {
+                setTimeout(() => {
+                    currentInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
         }
     }
 

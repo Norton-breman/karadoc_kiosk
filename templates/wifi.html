@@ -100,10 +100,6 @@ function connectToWifi(ssid, secured) {
         document.getElementById('ssidInput').value = ssid;
         document.getElementById('passwordInput').value = '';
         document.getElementById('passwordModal').style.display = 'block';
-        // Petit délai pour laisser le modal s'afficher avant de déclencher le clavier
-        setTimeout(function() {
-            document.getElementById('passwordInput').focus();
-        }, 100);
     } else {
         // Réseau ouvert, connexion directe
         const form = document.createElement('form');
