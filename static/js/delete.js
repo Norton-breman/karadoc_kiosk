@@ -20,9 +20,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 ? `Êtes-vous sûr de vouloir supprimer le dossier "${fileName}" et tout son contenu ?`
                 : `Êtes-vous sûr de vouloir supprimer "${fileName}" ?`;
 
-            if (confirm(message)) {
-                deleteFile(fileId, this);
-            }
+            showConfirmModal(message).then(confirmed => {
+                if (confirmed) {
+                    deleteFile(fileId, this);
+                }
+            });
         });
     });
 });
@@ -55,15 +57,116 @@ function deleteFile(fileId, buttonElement) {
                 }, 300);
             }
         } else {
-            alert(`Erreur lors de la suppression : ${data.error || 'Erreur inconnue'}`);
+            showAlertModal(`Erreur lors de la suppression : ${data.error || 'Erreur inconnue'}`);
             buttonElement.disabled = false;
             buttonElement.style.opacity = '1';
         }
     })
     .catch(error => {
         console.error('Erreur:', error);
-        alert('Erreur lors de la suppression du fichier');
+        showAlertModal('Erreur lors de la suppression du fichier');
         buttonElement.disabled = false;
         buttonElement.style.opacity = '1';
+    });
+}
+
+/* ---------------------------------------------------------------------------
+ * Modal HTML centré (remplace confirm()/alert() natifs de Chromium qui
+ * ignorent la taille de l'écran 320x480).
+ * ------------------------------------------------------------------------- */
+
+function ensureModal() {
+    let overlay = document.getElementById('app-modal-overlay');
+    if (overlay) {
+        return overlay;
+    }
+
+    overlay = document.createElement('div');
+    overlay.id = 'app-modal-overlay';
+    overlay.className = 'app-modal-overlay';
+    overlay.innerHTML = `
+        <div class="app-modal" role="dialog" aria-modal="true">
+            <p class="app-modal-message"></p>
+            <div class="app-modal-actions">
+                <button type="button" class="app-modal-btn app-modal-cancel">Annuler</button>
+                <button type="button" class="app-modal-btn app-modal-confirm">Supprimer</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    return overlay;
+}
+
+/**
+ * Affiche un modal de confirmation. Retourne une Promise résolue à true
+ * (confirmé) ou false (annulé / clic hors du modal).
+ */
+function showConfirmModal(message) {
+    return new Promise(resolve => {
+        const overlay = ensureModal();
+        const modal = overlay.querySelector('.app-modal');
+        const cancelBtn = overlay.querySelector('.app-modal-cancel');
+        const confirmBtn = overlay.querySelector('.app-modal-confirm');
+
+        overlay.querySelector('.app-modal-message').textContent = message;
+        cancelBtn.style.display = '';
+        confirmBtn.textContent = 'Supprimer';
+
+        function close(result) {
+            overlay.classList.remove('visible');
+            overlay.removeEventListener('click', onOverlayClick);
+            cancelBtn.removeEventListener('click', onCancel);
+            confirmBtn.removeEventListener('click', onConfirm);
+            resolve(result);
+        }
+
+        function onOverlayClick(e) {
+            // Fermer uniquement si on clique en dehors du modal
+            if (e.target === overlay) {
+                close(false);
+            }
+        }
+        function onCancel() { close(false); }
+        function onConfirm() { close(true); }
+
+        overlay.addEventListener('click', onOverlayClick);
+        cancelBtn.addEventListener('click', onCancel);
+        confirmBtn.addEventListener('click', onConfirm);
+
+        overlay.classList.add('visible');
+    });
+}
+
+/**
+ * Affiche un modal d'information (remplace alert()). Un seul bouton "OK".
+ */
+function showAlertModal(message) {
+    return new Promise(resolve => {
+        const overlay = ensureModal();
+        const cancelBtn = overlay.querySelector('.app-modal-cancel');
+        const confirmBtn = overlay.querySelector('.app-modal-confirm');
+
+        overlay.querySelector('.app-modal-message').textContent = message;
+        cancelBtn.style.display = 'none';
+        confirmBtn.textContent = 'OK';
+
+        function close() {
+            overlay.classList.remove('visible');
+            overlay.removeEventListener('click', onOverlayClick);
+            confirmBtn.removeEventListener('click', onConfirm);
+            resolve();
+        }
+
+        function onOverlayClick(e) {
+            if (e.target === overlay) {
+                close();
+            }
+        }
+        function onConfirm() { close(); }
+
+        overlay.addEventListener('click', onOverlayClick);
+        confirmBtn.addEventListener('click', onConfirm);
+
+        overlay.classList.add('visible');
     });
 }
