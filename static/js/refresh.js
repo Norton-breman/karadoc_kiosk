@@ -48,15 +48,15 @@ function refreshFolder(folderId, folderName, buttonElement) {
             } else {
                 // Afficher le message de succès
                 const message = data.message || 'Rafraîchissement effectué';
-                alert(message);
-
-                // Recharger la page pour afficher les changements
-                if (data.added > 0 || data.removed > 0) {
-                    window.location.reload();
-                }
+                showAlertModal(message).then(() => {
+                    // Recharger la page pour afficher les changements
+                    if (data.added > 0 || data.removed > 0) {
+                        window.location.reload();
+                    }
+                });
             }
         } else {
-            alert(`Erreur lors du rafraîchissement : ${data.error || 'Erreur inconnue'}`);
+            showAlertModal(`Erreur lors du rafraîchissement : ${data.error || 'Erreur inconnue'}`);
         }
     })
     .catch(error => {
@@ -64,7 +64,7 @@ function refreshFolder(folderId, folderName, buttonElement) {
         icon.style.animation = '';
         buttonElement.disabled = false;
         buttonElement.classList.remove('refreshing');
-        alert('Erreur lors du rafraîchissement du dossier');
+        showAlertModal('Erreur lors du rafraîchissement du dossier');
     });
 }
 

@@ -35,9 +35,9 @@
                     <input type="hidden" name="mac" value="{{ device.mac }}">
                     <button type="submit" class="btn-disconnect">Déconnecter</button>
                 </form>
-                <form method="POST" action="{{ url_for('bluetooth.bluetooth_remove') }}" style="display: inline;">
+                <form method="POST" action="{{ url_for('bluetooth.bluetooth_remove') }}" style="display: inline;" data-confirm="Supprimer cet appareil ?" data-confirm-text="Supprimer">
                     <input type="hidden" name="mac" value="{{ device.mac }}">
-                    <button type="submit" class="btn-remove" onclick="return confirm('Supprimer cet appareil ?')">Supprimer</button>
+                    <button type="submit" class="btn-remove">Supprimer</button>
                 </form>
             </div>
         </div>
@@ -74,9 +74,9 @@
                             <input type="hidden" name="mac" value="{{ device.mac }}">
                             <button type="submit" class="btn-connect">Connecter</button>
                         </form>
-                        <form method="POST" action="{{ url_for('bluetooth.bluetooth_remove') }}" style="display: inline;">
+                        <form method="POST" action="{{ url_for('bluetooth.bluetooth_remove') }}" style="display: inline;" data-confirm="Supprimer cet appareil ?" data-confirm-text="Supprimer">
                             <input type="hidden" name="mac" value="{{ device.mac }}">
-                            <button type="submit" class="btn-remove" onclick="return confirm('Supprimer cet appareil ?')">Supprimer</button>
+                            <button type="submit" class="btn-remove">Supprimer</button>
                         </form>
                     {% endif %}
                 </div>
