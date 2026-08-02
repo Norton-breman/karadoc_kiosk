@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="fix virtual keyboard not showing in wifi connection modal">
+    <list default="true" id="46697f75-e2ba-4821-b1bb-fdadeaaef32a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Karadoc_kiosk.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Karadoc_kiosk.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/wifi.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/wifi.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,398 +19,51 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;Norton-breman&quot;
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Norton-breman"
   }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Norton-breman/Karadoc_kiosk.git&quot;,
-    &quot;accountId&quot;: &quot;4f03cf9b-53d8-46a0-938a-b91d38764f71&quot;
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Norton-breman/karadoc_kiosk",
+    "accountId": "1324d7a7-d351-49e4-9a3d-c5e6a7322cca"
   }
-}</component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 8
-}</component>
-  <component name="ProjectId" id="366yQasg5kJBV8Mq1b54GN1Mpb8" />
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="3HMIPHGr2pk6q27fhIfBbFwnYs3" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.app.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true"
   }
-}</component>
-  <component name="RunManager">
-    <configuration name="app" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
-      <module name="Karadoc_kiosk" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-f7edda007824-d92f378335d8-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-253.28294.336" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="d2c88d88-6b6c-47ed-9cff-cfebf6c4c418" name="Changes" comment="" />
-      <created>1764341300545</created>
+      <changelist id="46697f75-e2ba-4821-b1bb-fdadeaaef32a" name="Changes" comment="" />
+      <created>1785671486218</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1764341300545</updated>
+      <updated>1785671486218</updated>
     </task>
-    <task id="LOCAL-00001" summary="initial commit">
-      <option name="closed" value="true" />
-      <created>1764341513224</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1764341513224</updated>
-    </task>
-    <task id="LOCAL-00002" summary="adapt viewport to 320x480px screen">
-      <option name="closed" value="true" />
-      <created>1766232671626</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1766232671626</updated>
-    </task>
-    <task id="LOCAL-00003" summary="adapt viewport to 320x480px screen">
-      <option name="closed" value="true" />
-      <created>1766234054739</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1766234054739</updated>
-    </task>
-    <task id="LOCAL-00004" summary="adapt viewport to 320x480px screen">
-      <option name="closed" value="true" />
-      <created>1766234724055</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1766234724055</updated>
-    </task>
-    <task id="LOCAL-00005" summary="add virtual keyboard">
-      <option name="closed" value="true" />
-      <created>1766235211295</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1766235211295</updated>
-    </task>
-    <task id="LOCAL-00006" summary="add virtual keyboard">
-      <option name="closed" value="true" />
-      <created>1766235233265</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1766235233265</updated>
-    </task>
-    <task id="LOCAL-00007" summary="add virtual keyboard">
-      <option name="closed" value="true" />
-      <created>1766235802325</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1766235802325</updated>
-    </task>
-    <task id="LOCAL-00008" summary="add virtual keyboard">
-      <option name="closed" value="true" />
-      <created>1766236826529</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1766236826529</updated>
-    </task>
-    <task id="LOCAL-00009" summary="add virtual keyboard">
-      <option name="closed" value="true" />
-      <created>1766237074982</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1766237074982</updated>
-    </task>
-    <task id="LOCAL-00010" summary="add virtual keyboard">
-      <option name="closed" value="true" />
-      <created>1766237238769</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1766237238769</updated>
-    </task>
-    <task id="LOCAL-00011" summary="add virtual keyboard">
-      <option name="closed" value="true" />
-      <created>1766237438353</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1766237438353</updated>
-    </task>
-    <task id="LOCAL-00012" summary="add virtual keyboard">
-      <option name="closed" value="true" />
-      <created>1766237586525</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1766237586525</updated>
-    </task>
-    <task id="LOCAL-00013" summary="adjust cards size">
-      <option name="closed" value="true" />
-      <created>1766238556437</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1766238556437</updated>
-    </task>
-    <task id="LOCAL-00014" summary="adjust cards size">
-      <option name="closed" value="true" />
-      <created>1766239132760</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1766239132760</updated>
-    </task>
-    <task id="LOCAL-00015" summary="adjust all size to 320 px">
-      <option name="closed" value="true" />
-      <created>1766239619833</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1766239619833</updated>
-    </task>
-    <task id="LOCAL-00016" summary="adjust all size to 320 px">
-      <option name="closed" value="true" />
-      <created>1766239827045</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1766239827045</updated>
-    </task>
-    <task id="LOCAL-00017" summary="adjust all size to 320 px">
-      <option name="closed" value="true" />
-      <created>1766239947536</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1766239947536</updated>
-    </task>
-    <task id="LOCAL-00018" summary="adjust all size to 320 px">
-      <option name="closed" value="true" />
-      <created>1766240126292</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1766240126292</updated>
-    </task>
-    <task id="LOCAL-00019" summary="change wifi management to conman instead of network-manager (for use under dietpi)">
-      <option name="closed" value="true" />
-      <created>1766241832604</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1766241832604</updated>
-    </task>
-    <task id="LOCAL-00020" summary="change wifi management to conman instead of network-manager (for use under dietpi)">
-      <option name="closed" value="true" />
-      <created>1766242012950</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1766242012950</updated>
-    </task>
-    <task id="LOCAL-00021" summary="change wifi management to conman instead of network-manager (for use under dietpi)">
-      <option name="closed" value="true" />
-      <created>1766242606952</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1766242606952</updated>
-    </task>
-    <task id="LOCAL-00022" summary="change wifi management to conman instead of network-manager (for use under dietpi)">
-      <option name="closed" value="true" />
-      <created>1766242885664</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1766242885664</updated>
-    </task>
-    <task id="LOCAL-00023" summary="fix blutooth connection">
-      <option name="closed" value="true" />
-      <created>1766303737418</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1766303737418</updated>
-    </task>
-    <task id="LOCAL-00024" summary="fix blutooth connection">
-      <option name="closed" value="true" />
-      <created>1766330961818</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1766330961818</updated>
-    </task>
-    <task id="LOCAL-00025" summary="fix blutooth connection">
-      <option name="closed" value="true" />
-      <created>1766388458820</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1766388458820</updated>
-    </task>
-    <task id="LOCAL-00026" summary="fix blutooth connection">
-      <option name="closed" value="true" />
-      <created>1766389479916</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1766389479916</updated>
-    </task>
-    <task id="LOCAL-00027" summary="debug blutooth connection">
-      <option name="closed" value="true" />
-      <created>1766389768982</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1766389768982</updated>
-    </task>
-    <task id="LOCAL-00028" summary="debug blutooth connection">
-      <option name="closed" value="true" />
-      <created>1766390204930</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1766390204930</updated>
-    </task>
-    <task id="LOCAL-00029" summary="add activate wifi button">
-      <option name="closed" value="true" />
-      <created>1766391775771</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1766391775771</updated>
-    </task>
-    <task id="LOCAL-00030" summary="&#10;wifi activate">
-      <option name="closed" value="true" />
-      <created>1766392273521</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1766392273521</updated>
-    </task>
-    <task id="LOCAL-00031" summary="store emoticon locally">
-      <option name="closed" value="true" />
-      <created>1766393141253</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1766393141253</updated>
-    </task>
-    <task id="LOCAL-00032" summary="store emoticon locally">
-      <option name="closed" value="true" />
-      <created>1766393411811</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1766393411811</updated>
-    </task>
-    <task id="LOCAL-00033" summary="store emoticon locally">
-      <option name="closed" value="true" />
-      <created>1766393626897</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1766393626897</updated>
-    </task>
-    <task id="LOCAL-00034" summary="add splash screen">
-      <option name="closed" value="true" />
-      <created>1766396156343</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1766396156343</updated>
-    </task>
-    <task id="LOCAL-00035" summary="fix virtual keyboard not showing in wifi connection modal">
-      <option name="closed" value="true" />
-      <created>1766566004131</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1766566004131</updated>
-    </task>
-    <task id="LOCAL-00036" summary="fix virtual keyboard not showing in wifi connection modal">
-      <option name="closed" value="true" />
-      <created>1766566482118</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1766566482118</updated>
-    </task>
-    <option name="localTasksCounter" value="37" />
     <servers />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="initial commit" />
-    <MESSAGE value="adapt viewport to 320x480px screen" />
-    <MESSAGE value="add virtual keyboard" />
-    <MESSAGE value="adjust cards size" />
-    <MESSAGE value="adjust all size to 320 px" />
-    <MESSAGE value="change wifi management to conman instead of network-manager (for use under dietpi)" />
-    <MESSAGE value="fix blutooth connection" />
-    <MESSAGE value="debug blutooth connection" />
-    <MESSAGE value="add activate wifi button" />
-    <MESSAGE value="&#10;wifi activate" />
-    <MESSAGE value="store emoticon locally" />
-    <MESSAGE value="add splash screen" />
-    <MESSAGE value="fix virtual keyboard not showing in wifi connection modal" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix virtual keyboard not showing in wifi connection modal" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app.py</url>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app.py</url>
-          <line>13</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
