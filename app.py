@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 
 from karapp.wifi import connection_bp, get_current_wifi
 from karapp.bluetooth import  bluetooth_bp, get_connected_bluetooth_devices
+from karapp.update import update_bp
 from karapp.models import db, FileModel
 from karapp.tools.music import get_metadata
 from karapp.tools.photo import make_artwork_base64
@@ -27,6 +28,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+DB_PATH
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.register_blueprint(connection_bp)
 app.register_blueprint(bluetooth_bp)
+app.register_blueprint(update_bp)
 
 db.init_app(app)
 

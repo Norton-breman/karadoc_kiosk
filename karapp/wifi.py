@@ -246,16 +246,44 @@ def get_current_wifi():
         return None
 
 def is_wifi_enabled():
-    """Vérifie si le WiFi est activé"""
+    """Vérifie si la radio WiFi est activée.
+
+    On NE se base PAS sur l'état opérationnel ('state UP') : celui-ci n'est vrai
+    que lorsque l'interface est associée à un point d'accès. Hors de tout réseau
+    connu, l'interface reste 'DORMANT'/'DOWN' alors que la radio est bien active,
+    ce qui faisait croire à tort que le WiFi était désactivé.
+    """
+    # 1) Méthode préférée : rfkill donne l'état réel de la radio,
+    #    indépendamment de toute connexion à un réseau.
     try:
-        # Vérifier l'état de l'interface avec ip link
+        result = subprocess.run(['rfkill', 'list', 'wifi'],
+                              capture_output=True, text=True, timeout=5)
+        if result.returncode == 0 and result.stdout.strip():
+            found = False
+            blocked = False
+            for line in result.stdout.split('\n'):
+                line = line.strip().lower()
+                if 'blocked:' in line:
+                    found = True
+                    if line.endswith('yes'):
+                        blocked = True
+            if found:
+                return not blocked
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        pass
+    except Exception:
+        pass
+
+    # 2) Repli : chercher le flag administratif 'UP' dans les <flags> de
+    #    l'interface (et NON 'state UP', qui dépend de l'association réseau).
+    try:
         result = subprocess.run(['ip', 'link', 'show', WIFI_INTERFACE],
                               capture_output=True, text=True, timeout=5)
-
         if result.returncode == 0:
-            # Chercher "state UP" dans la sortie
-            return 'state UP' in result.stdout
-
+            match = re.search(r'<([^>]*)>', result.stdout)
+            if match:
+                flags = match.group(1).split(',')
+                return 'UP' in flags
         return False
     except Exception:
         return False

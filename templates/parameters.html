@@ -28,5 +28,12 @@
                 <i class="fas fa-sync"></i> Actualiser la bibliothèque
             </a>
         </li>
+        <li id="update-item">
+            <i class="fas fa-cloud-arrow-down"></i> Mise à jour
+            <br><small id="update-status">Vérification en cours...</small>
+            <br><button id="update-btn" class="update-btn" style="display: none;">Mettre à jour</button>
+        </li>
     </ul>
+
+    <script src="{{ url_for('static', filename='js/update.js') }}"></script>
 {% endblock %}
