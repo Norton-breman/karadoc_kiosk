@@ -402,4 +402,8 @@ def basename_filter(path):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    # Exclure .git et .venv du reloader : sans cela, le `git fetch` déclenché
+    # par la vérification de mise à jour modifie des fichiers dans .git/ et
+    # provoque des redémarrages en boucle du serveur en mode debug.
+    app.run(host="0.0.0.0", port=5000, debug=True,
+            exclude_patterns=["*/.git/*", "*/.venv/*"])
