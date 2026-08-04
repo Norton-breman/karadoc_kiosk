@@ -55,8 +55,10 @@ def deezer_keyboard():
         running = subprocess.run(["pgrep", "-x", "matchbox-keyboard"],
                                  capture_output=True)
         if running.returncode != 0:
+            # Layout "lq1" = clavier complet (lettres + chiffres + symboles) ;
+            # le layout par défaut n'a que les lettres.
             subprocess.Popen(
-                ["matchbox-keyboard"], env=env,
+                ["matchbox-keyboard", "lq1"], env=env,
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             )
     except FileNotFoundError:
@@ -67,12 +69,12 @@ def deezer_keyboard():
     # Sans gestionnaire de fenêtres, matchbox-keyboard s'ouvre petit en haut à
     # gauche. Sa fenêtre s'appelle "Keyboard" et n'a pas de WM_CLASS → on la
     # cible par --name. On force sa géométrie : bas de l'écran, pleine largeur,
-    # hauteur 200 px → les touches s'agrandissent pour remplir la fenêtre.
-    # Écran 320x480 → position (0, 280), taille 320x200.
+    # hauteur 240 px (le layout complet lq1 a plusieurs rangées) → les touches
+    # s'agrandissent pour remplir. Écran 320x480 → position (0, 240), taille 320x240.
     try:
         subprocess.run(
             ["xdotool", "search", "--sync", "--name", "Keyboard",
-             "windowmove", "0", "280", "windowsize", "320", "200"],
+             "windowmove", "0", "240", "windowsize", "320", "240"],
             env=env, capture_output=True, timeout=10,
         )
     except Exception:
