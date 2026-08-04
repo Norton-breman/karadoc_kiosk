@@ -50,15 +50,21 @@ def deezer_keyboard():
     """
     env = dict(os.environ)
     env.setdefault("DISPLAY", ":0")
+    # Layout maison épuré (AZERTY + chiffres + symboles utiles) livré dans le
+    # repo ; chargé via MB_KBD_CONFIG (aucun sudo, déployé par git pull). Les
+    # layouts stock sont soit trop pauvres (défaut = lettres seules) soit trop
+    # chargés (lq1 = symboles maths/scandinaves, pas d'underscore).
+    env["MB_KBD_CONFIG"] = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "static", "matchbox", "keyboard-karadoc.xml",
+    )
     try:
         # Éviter d'empiler plusieurs instances.
         running = subprocess.run(["pgrep", "-x", "matchbox-keyboard"],
                                  capture_output=True)
         if running.returncode != 0:
-            # Layout "lq1" = clavier complet (lettres + chiffres + symboles) ;
-            # le layout par défaut n'a que les lettres.
             subprocess.Popen(
-                ["matchbox-keyboard", "lq1"], env=env,
+                ["matchbox-keyboard"], env=env,
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             )
     except FileNotFoundError:
