@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="46697f75-e2ba-4821-b1bb-fdadeaaef32a" name="Changes" comment="add deezer card">
+    <list default="true" id="46697f75-e2ba-4821-b1bb-fdadeaaef32a" name="Changes" comment="add deezer page">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karapp/wifi.py" beforeDir="false" afterPath="$PROJECT_DIR$/karapp/wifi.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,7 +122,15 @@
       <option name="project" value="LOCAL" />
       <updated>1785772158287</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="add deezer page">
+      <option name="closed" value="true" />
+      <created>1785775458225</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1785775458225</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -130,6 +139,7 @@
     <MESSAGE value="fix all confirm/alert modals" />
     <MESSAGE value="fix a wifi bug&#10;add update app button in parameters section" />
     <MESSAGE value="add deezer card" />
-    <option name="LAST_COMMIT_MESSAGE" value="add deezer card" />
+    <MESSAGE value="add deezer page" />
+    <option name="LAST_COMMIT_MESSAGE" value="add deezer page" />
   </component>
 </project>

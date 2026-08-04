@@ -57,98 +57,88 @@ def wifi_toggle():
         return render_template('wifi.html', networks=networks, current_wifi=current_wifi, wifi_enabled=wifi_enabled, error=message)
 
 def scan_wifi_networks():
-    """Scanne les réseaux WiFi disponibles avec iwlist"""
+    """Scanne les réseaux WiFi disponibles via wpa_cli.
+
+    On NE se sert PLUS de `iwlist scan` : cet outil entre en conflit avec le
+    wpa_supplicant déjà lancé pour wlan0 (via /etc/network/interfaces) et
+    renvoie une liste vide. On demande donc le scan à wpa_supplicant lui-même
+    (`wpa_cli scan`) puis on lit ses résultats (`wpa_cli scan_results`).
+    """
     try:
-        # Scanner les réseaux (essayer avec et sans sudo)
-        try:
-            result = subprocess.run(['sudo', 'iwlist', WIFI_INTERFACE, 'scan'],
-                                  capture_output=True, text=True, timeout=15)
-        except FileNotFoundError:
-            result = subprocess.run(['iwlist', WIFI_INTERFACE, 'scan'],
-                                  capture_output=True, text=True, timeout=15)
+        # Déclencher un nouveau scan (peut répondre FAIL-BUSY si un scan est
+        # déjà en cours : ce n'est pas bloquant, on lira les résultats quand même).
+        subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'scan'],
+                       capture_output=True, text=True, timeout=10)
+
+        # Laisser le temps au scan de se terminer avant de lire les résultats.
+        time.sleep(2)
+
+        result = subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'scan_results'],
+                                capture_output=True, text=True, timeout=10)
 
         if result.returncode != 0:
             return []
 
         networks = {}
-        current_cell = {}
 
+        # Format des lignes (séparées par des tabulations) :
+        # bssid / frequency / signal level / flags / ssid
+        # 10:d7:b0:20:1b:b2   2462   -80   [WPA2-PSK-CCMP][WPS][ESS]   Livebox-1BB2
         for line in result.stdout.split('\n'):
-            line = line.strip()
+            line = line.rstrip('\n')
+            # Sauter l'en-tête et les lignes vides
+            if not line or line.startswith('bssid'):
+                continue
 
-            # Nouvelle cellule (nouveau réseau)
-            if line.startswith('Cell '):
-                if current_cell.get('ssid'):
-                    ssid = current_cell['ssid']
-                    # Garder le meilleur signal pour chaque SSID
-                    if ssid not in networks or current_cell['signal'] > networks[ssid]['signal']:
-                        networks[ssid] = current_cell
-                current_cell = {}
+            parts = line.split('\t')
+            if len(parts) < 5:
+                continue
 
-            # ESSID
-            elif 'ESSID:' in line:
-                match = re.search(r'ESSID:"([^"]+)"', line)
-                if match:
-                    current_cell['ssid'] = match.group(1)
+            flags = parts[3]
+            ssid = parts[4].strip()
 
-            # Signal level
-            elif 'Signal level=' in line:
-                match = re.search(r'Signal level=(-?\d+)', line)
-                if match:
-                    dbm = int(match.group(1))
-                    # Convertir dBm en pourcentage (approximation)
-                    # -30 dBm = excellent (100%), -90 dBm = très faible (0%)
-                    signal_percent = max(0, min(100, 2 * (dbm + 100)))
-                    current_cell['signal'] = signal_percent
+            # Ignorer les réseaux masqués (SSID vide)
+            if not ssid:
+                continue
 
-            # Encryption
-            elif 'Encryption key:' in line:
-                if 'on' in line.lower():
-                    current_cell['encrypted'] = True
-                else:
-                    current_cell['encrypted'] = False
+            # Convertir le signal (dBm) en pourcentage approximatif
+            # -30 dBm = excellent (100%), -90 dBm = très faible (0%)
+            try:
+                dbm = int(parts[2])
+            except ValueError:
+                dbm = -80
+            signal_percent = max(0, min(100, 2 * (dbm + 100)))
 
-            # Type de sécurité
-            elif 'IEEE 802.11i/WPA2' in line or 'WPA2' in line:
-                current_cell['security'] = 'WPA2'
-            elif 'WPA Version' in line or line.startswith('WPA:'):
-                if 'security' not in current_cell:
-                    current_cell['security'] = 'WPA'
-            elif 'WEP' in line:
-                if 'security' not in current_cell:
-                    current_cell['security'] = 'WEP'
-
-        # Ajouter la dernière cellule
-        if current_cell.get('ssid'):
-            ssid = current_cell['ssid']
-            if ssid not in networks or current_cell['signal'] > networks[ssid]['signal']:
-                networks[ssid] = current_cell
-
-        # Formater les résultats
-        result_list = []
-        for cell in networks.values():
-            if not cell.get('signal'):
-                cell['signal'] = 50  # Valeur par défaut
-
-            if cell.get('encrypted'):
-                security = cell.get('security', 'WPA/WPA2')
+            # Déterminer la sécurité à partir des flags
+            if 'WPA2' in flags:
+                security = 'WPA2'
+                secured = True
+            elif 'WPA' in flags:
+                security = 'WPA'
+                secured = True
+            elif 'WEP' in flags:
+                security = 'WEP'
                 secured = True
             else:
                 security = 'Open'
                 secured = False
 
-            result_list.append({
-                'ssid': cell['ssid'],
-                'signal': cell['signal'],
+            cell = {
+                'ssid': ssid,
+                'signal': signal_percent,
                 'security': security,
-                'secured': secured
-            })
+                'secured': secured,
+            }
 
-        return sorted(result_list, key=lambda x: x['signal'], reverse=True)
+            # Garder le meilleur signal pour chaque SSID
+            if ssid not in networks or signal_percent > networks[ssid]['signal']:
+                networks[ssid] = cell
 
-    except (subprocess.TimeoutExpired, FileNotFoundError) as e:
+        return sorted(networks.values(), key=lambda x: x['signal'], reverse=True)
+
+    except (subprocess.TimeoutExpired, FileNotFoundError):
         return []
-    except Exception as e:
+    except Exception:
         return []
 
 def connect_to_wifi(ssid, password=None):
