@@ -59,8 +59,11 @@ def deezer_keyboard():
         "static", "matchbox", "keyboard-karadoc.xml",
     )
     try:
-        # Éviter d'empiler plusieurs instances.
-        running = subprocess.run(["pgrep", "-x", "matchbox-keyboard"],
+        # Éviter d'empiler plusieurs instances. NB : on matche sur la ligne de
+        # commande (-f) et non le nom (-x) car Linux tronque le nom de process à
+        # 15 car. ("matchbox-keyboa") → un `-x matchbox-keyboard` ne matcherait
+        # jamais et relancerait un clavier à chaque appel.
+        running = subprocess.run(["pgrep", "-f", "matchbox-keyboard"],
                                  capture_output=True)
         if running.returncode != 0:
             subprocess.Popen(
@@ -95,7 +98,9 @@ def deezer_keyboard():
 def deezer_keyboard_hide():
     """Ferme le clavier tactile système s'il est ouvert."""
     try:
-        subprocess.run(["pkill", "-x", "matchbox-keyboard"], capture_output=True)
+        # -f (ligne de commande) et non -x : le nom de process est tronqué à
+        # 15 car. ("matchbox-keyboa"), donc -x matchbox-keyboard ne matcherait pas.
+        subprocess.run(["pkill", "-f", "matchbox-keyboard"], capture_output=True)
     except Exception:
         pass
     return jsonify({"success": True})
