@@ -86,8 +86,11 @@
         <form method="POST" action="{{ url_for('wifi.wifi_connect') }}">
             <input type="hidden" id="ssidInput" name="ssid" value="">
             <label for="password">Mot de passe :</label><br>
-            <input type="password" id="passwordInput" name="password" inputmode="none" style="width: 100%; padding: 0.5em; margin: 0.5em 0; box-sizing: border-box;">
-            <br>
+            <input type="text" id="passwordInput" name="password" inputmode="none" autocomplete="off" style="width: 100%; padding: 0.5em; margin: 0.5em 0; box-sizing: border-box;">
+            <label style="display: block; font-size: 0.9em; margin-bottom: 0.5em; cursor: pointer;">
+                <input type="checkbox" id="showPassword" checked onchange="togglePasswordVisibility()">
+                Afficher le mot de passe
+            </label>
             <button type="submit" style="background: #06d6a0; color: white; border: none; padding: 0.5em 1em; border-radius: 0.5em; cursor: pointer; margin-right: 0.5em;">Se connecter</button>
             <button type="button" onclick="closePasswordModal()" style="background: #f582ae; color: white; border: none; padding: 0.5em 1em; border-radius: 0.5em; cursor: pointer;">Annuler</button>
         </form>
@@ -123,6 +126,12 @@ function connectToWifi(ssid, secured, known) {
 
 function closePasswordModal() {
     document.getElementById('passwordModal').style.display = 'none';
+}
+
+function togglePasswordVisibility() {
+    const input = document.getElementById('passwordInput');
+    const show = document.getElementById('showPassword').checked;
+    input.type = show ? 'text' : 'password';
 }
 
 // Fermer le modal en cliquant à côté
