@@ -6,7 +6,7 @@ proxifiée ici côté serveur : le navigateur ne peut pas l'interroger directeme
 `DeezerItem` (pochette en base64). La lecture se fait via le widget officiel
 Deezer (`widget.deezer.com`) embarqué en iframe — voir `deezer_widget.html`.
 """
-from flask import Blueprint, render_template, request, jsonify, abort
+from flask import Blueprint, render_template, request, jsonify, abort, redirect
 import requests
 import subprocess
 import os
@@ -215,12 +215,17 @@ def deezer_section(item_type):
 
 @deezer_bp.route("/deezer/play/<item_type>/<deezer_id>")
 def deezer_play(item_type, deezer_id):
-    """Page de lecture : embarque le widget officiel Deezer pour cet élément."""
+    """Lecture : redirige vers le vrai lecteur web Deezer.
+
+    Le widget embarqué ne peut pas utiliser la session du compte (iframe
+    cross-site → cookie non transmis, cf. SameSite), il resterait donc bloqué
+    sur des extraits 30 s. On ouvre à la place le lecteur web `deezer.com` en
+    navigation plein écran : c'est du first-party, donc la session connectée
+    fonctionne et la lecture est complète. Retour à Karadoc par swipe.
+    """
     if item_type not in SEARCH_TYPES:
         abort(404)
-    title = request.args.get("title", "")
-    widget_url = f"https://widget.deezer.com/widget/dark/{item_type}/{deezer_id}"
-    return render_template("deezer_widget.html", widget_url=widget_url, title=title)
+    return redirect(f"https://www.deezer.com/{item_type}/{deezer_id}")
 
 
 @deezer_bp.route("/deezer/delete/<int:item_id>", methods=["POST"])
