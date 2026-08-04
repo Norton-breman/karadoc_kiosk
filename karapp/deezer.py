@@ -65,13 +65,14 @@ def deezer_keyboard():
         return jsonify({"success": False, "error": "Impossible de lancer le clavier"})
 
     # Sans gestionnaire de fenêtres, matchbox-keyboard s'ouvre petit en haut à
-    # gauche. On force sa géométrie : bas de l'écran, pleine largeur (320), haut
-    # de 200 px → les touches s'agrandissent pour remplir la fenêtre.
-    # Écran 320x480 → largeur 320, hauteur 200, position (0, 280).
+    # gauche. Sa fenêtre s'appelle "Keyboard" et n'a pas de WM_CLASS → on la
+    # cible par --name. On force sa géométrie : bas de l'écran, pleine largeur,
+    # hauteur 200 px → les touches s'agrandissent pour remplir la fenêtre.
+    # Écran 320x480 → position (0, 280), taille 320x200.
     try:
         subprocess.run(
-            ["xdotool", "search", "--sync", "--class", "matchbox-keyboard",
-             "windowsize", "320", "200", "windowmove", "0", "280"],
+            ["xdotool", "search", "--sync", "--name", "Keyboard",
+             "windowmove", "0", "280", "windowsize", "320", "200"],
             env=env, capture_output=True, timeout=10,
         )
     except Exception:
