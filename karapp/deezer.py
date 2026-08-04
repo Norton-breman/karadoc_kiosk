@@ -215,17 +215,19 @@ def deezer_section(item_type):
 
 @deezer_bp.route("/deezer/play/<item_type>/<deezer_id>")
 def deezer_play(item_type, deezer_id):
-    """Lecture : redirige vers le vrai lecteur web Deezer.
+    """Lecture via le widget officiel Deezer embarqué (léger, rapide sur le RPi).
 
-    Le widget embarqué ne peut pas utiliser la session du compte (iframe
-    cross-site → cookie non transmis, cf. SameSite), il resterait donc bloqué
-    sur des extraits 30 s. On ouvre à la place le lecteur web `deezer.com` en
-    navigation plein écran : c'est du first-party, donc la session connectée
-    fonctionne et la lecture est complète. Retour à Karadoc par swipe.
+    NB : le widget en iframe cross-site ne voyait pas la session (partitionnement
+    du stockage + SameSite). On teste des flags Chromium de compat
+    (--disable-features=ThirdPartyStoragePartitioning,PartitionedCookies + policy
+    CookiesAllowedForUrls) pour lui redonner accès au compte. Si ça échoue,
+    revenir à une redirection vers le lecteur web `deezer.com/<type>/<id>`.
     """
     if item_type not in SEARCH_TYPES:
         abort(404)
-    return redirect(f"https://www.deezer.com/{item_type}/{deezer_id}")
+    title = request.args.get("title", "")
+    widget_url = f"https://widget.deezer.com/widget/dark/{item_type}/{deezer_id}"
+    return render_template("deezer_widget.html", widget_url=widget_url, title=title)
 
 
 @deezer_bp.route("/deezer/delete/<int:item_id>", methods=["POST"])
