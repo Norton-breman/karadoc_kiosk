@@ -2,75 +2,17 @@
 {% block title %}Deezer{% endblock %}
 {% block content %}
     <h2><i class="fab fa-deezer"></i> Deezer</h2>
-    <p class="deezer-subtitle">Connectez-vous à votre compte</p>
 
-    <div class="deezer-login">
-        <input type="text" id="deezer-email" class="deezer-input"
-               placeholder="Adresse e-mail" inputmode="none" autocomplete="off">
-        <input type="password" id="deezer-password" class="deezer-input"
-               placeholder="Mot de passe" inputmode="none" autocomplete="off">
-        <button type="button" class="deezer-btn" onclick="deezerFakeLogin()">
-            Se connecter
-        </button>
-        <p class="deezer-note">Démo — aucune connexion réelle pour l'instant.</p>
+    <div class="cardlist">
+        <a href="{{ url_for('deezer.deezer_recherche') }}" class="card root" style="background-color:#a238ff">
+            <i class="fas fa-search"></i><br>Recherche
+        </a>
+        {% set icons = {'track': 'fa-music', 'album': 'fa-compact-disc', 'playlist': 'fa-list', 'artist': 'fa-user'} %}
+        {% set colors = {'track': '#8bd3dd', 'album': '#f3d2c1', 'playlist': '#cddafd', 'artist': '#c3aed6'} %}
+        {% for t in types %}
+        <a href="{{ url_for('deezer.deezer_section', item_type=t) }}" class="card root" style="background-color:{{ colors[t] }}">
+            <i class="fas {{ icons[t] }}"></i><br>{{ labels[t] }}
+        </a>
+        {% endfor %}
     </div>
-
-    <script>
-        function deezerFakeLogin() {
-            const email = document.getElementById('deezer-email').value.trim();
-            if (!email) {
-                showAlertModal("Entre ton adresse e-mail Deezer.");
-                return;
-            }
-            showAlertModal("Connexion Deezer simulée pour " + email + " (démo).");
-        }
-    </script>
-
-    <style>
-        .deezer-subtitle {
-            margin-top: 0;
-            color: #001858;
-        }
-        .deezer-login {
-            width: 250px;
-            margin: 1em auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .deezer-input {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 12px;
-            border: 2px solid #c3aed6;
-            border-radius: 10px;
-            font-family: inherit;
-            font-size: 1em;
-            text-align: center;
-        }
-        .deezer-input:focus {
-            outline: none;
-            border-color: #a238ff;
-        }
-        .deezer-btn {
-            background-color: #a238ff;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 12px;
-            font-family: inherit;
-            font-weight: bold;
-            font-size: 1em;
-            cursor: pointer;
-            transition: transform 0.15s ease;
-        }
-        .deezer-btn:active {
-            transform: scale(0.96);
-        }
-        .deezer-note {
-            font-size: 0.8em;
-            color: #666;
-            margin: 0;
-        }
-    </style>
 {% endblock %}

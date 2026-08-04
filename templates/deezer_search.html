@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Recherche Deezer{% endblock %}
+{% block content %}
+    <h2><i class="fab fa-deezer"></i> Recherche</h2>
+
+    <div class="deezer-search">
+        <input type="text" id="deezer-query" class="deezer-search-input"
+               placeholder="Titre, album, artiste…" inputmode="none" autocomplete="off">
+
+        <div class="deezer-types">
+            {% for t in types %}
+            <button type="button" class="deezer-type-btn {% if loop.first %}active{% endif %}"
+                    data-type="{{ t }}">{{ labels[t] }}</button>
+            {% endfor %}
+        </div>
+
+        <button type="button" id="deezer-search-btn" class="deezer-search-go">
+            <i class="fas fa-search"></i> Rechercher
+        </button>
+    </div>
+
+    <div id="deezer-results" class="deezer-results"></div>
+
+    <script src="{{ url_for('static', filename='js/deezer.js') }}"></script>
+{% endblock %}
