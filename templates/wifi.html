@@ -52,7 +52,7 @@
 
         {% if networks %}
             {% for network in networks %}
-            <div class="wifi-network" onclick="connectToWifi('{{ network.ssid }}', {{ network.secured|tojson }})">
+            <div class="wifi-network" onclick="connectToWifi('{{ network.ssid }}', {{ network.secured|tojson }}, {{ network.known|tojson }})">
                 <div class="network-info">
                     <div class="network-name">
                         {% if network.secured %}<i class="fas fa-lock"></i>{% else %}<i class="fas fa-signal"></i>{% endif %}
@@ -60,6 +60,7 @@
                     </div>
                     <div class="network-details">
                         Signal: {{ network.signal }}% | {{ network.security }}
+                        {% if network.known %}<span class="network-known"><i class="fas fa-check"></i> Enregistré</span>{% endif %}
                     </div>
                 </div>
                 <div class="signal-bars">
@@ -94,24 +95,27 @@
 </div>
 
 <script>
-function connectToWifi(ssid, secured) {
-    if (secured) {
+function connectToWifi(ssid, secured, known) {
+    // Réseau sécurisé ET inconnu → demander le mot de passe.
+    // Réseau ouvert OU déjà enregistré → connexion directe (wpa_supplicant
+    // connaît déjà le mot de passe pour un réseau connu).
+    if (secured && !known) {
         document.getElementById('networkName').textContent = ssid;
         document.getElementById('ssidInput').value = ssid;
         document.getElementById('passwordInput').value = '';
         document.getElementById('passwordModal').style.display = 'block';
     } else {
-        // Réseau ouvert, connexion directe
+        // Connexion directe, sans mot de passe
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '{{ url_for("wifi.wifi_connect") }}';
-        
+
         const ssidInput = document.createElement('input');
         ssidInput.type = 'hidden';
         ssidInput.name = 'ssid';
         ssidInput.value = ssid;
         form.appendChild(ssidInput);
-        
+
         document.body.appendChild(form);
         form.submit();
     }
@@ -176,6 +180,12 @@ document.addEventListener('DOMContentLoaded', function() {
     font-size: 0.9em;
     color: #666;
     margin-top: 0.2em;
+}
+
+.network-known {
+    color: #06d6a0;
+    font-weight: bold;
+    margin-left: 0.4em;
 }
 
 .signal-bars {

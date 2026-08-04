@@ -79,6 +79,10 @@ def scan_wifi_networks():
         if result.returncode != 0:
             return []
 
+        # SSID déjà enregistrés dans wpa_supplicant → connexion directe possible
+        # (sans redemander le mot de passe).
+        saved_ssids = {ssid for _, ssid in list_saved_networks()}
+
         networks = {}
 
         # Format des lignes (séparées par des tabulations) :
@@ -128,6 +132,7 @@ def scan_wifi_networks():
                 'signal': signal_percent,
                 'security': security,
                 'secured': secured,
+                'known': ssid in saved_ssids,
             }
 
             # Garder le meilleur signal pour chaque SSID
@@ -141,14 +146,15 @@ def scan_wifi_networks():
     except Exception:
         return []
 
-def find_network_id(ssid):
-    """Retourne l'id wpa_supplicant d'un réseau déjà enregistré pour ce SSID,
-    ou None s'il n'existe pas encore. Évite d'empiler des doublons dans la conf."""
+def list_saved_networks():
+    """Retourne la liste (id, ssid) des réseaux déjà enregistrés dans
+    wpa_supplicant (via `wpa_cli list_networks`)."""
+    saved = []
     try:
         result = subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'list_networks'],
                                 capture_output=True, text=True, timeout=5)
         if result.returncode != 0:
-            return None
+            return saved
 
         # Format tab-séparé : network id / ssid / bssid / flags (1re ligne = en-tête)
         for line in result.stdout.split('\n'):
@@ -157,11 +163,18 @@ def find_network_id(ssid):
                 continue
             if parts[0] == 'network id':
                 continue
-            if parts[1] == ssid:
-                return parts[0].strip()
-        return None
+            saved.append((parts[0].strip(), parts[1]))
     except Exception:
-        return None
+        pass
+    return saved
+
+def find_network_id(ssid):
+    """Retourne l'id wpa_supplicant d'un réseau déjà enregistré pour ce SSID,
+    ou None s'il n'existe pas encore. Évite d'empiler des doublons dans la conf."""
+    for network_id, saved_ssid in list_saved_networks():
+        if saved_ssid == ssid:
+            return network_id
+    return None
 
 def connect_to_wifi(ssid, password=None):
     """Se connecte à un réseau WiFi avec wpa_cli.
@@ -193,15 +206,17 @@ def connect_to_wifi(ssid, password=None):
 
             # Configurer la sécurité
             if password:
-                # Réseau sécurisé
+                # Mot de passe fourni → réseau sécurisé (nouveau ou mise à jour du psk)
                 subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'set_network',
                               network_id, 'psk', f'"{password}"'],
                              capture_output=True, text=True, timeout=5, check=True)
-            else:
-                # Réseau ouvert
+            elif created:
+                # Nouveau réseau sans mot de passe → réseau ouvert
                 subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'set_network',
                               network_id, 'key_mgmt', 'NONE'],
                              capture_output=True, text=True, timeout=5, check=True)
+            # else : réseau connu reconnecté sans mot de passe → on garde sa
+            # config existante (psk/key_mgmt), on se contente de l'activer.
 
             # Activer le réseau
             subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'enable_network', network_id],
