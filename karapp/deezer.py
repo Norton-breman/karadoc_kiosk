@@ -8,6 +8,8 @@ Deezer (`widget.deezer.com`) embarqué en iframe — voir `deezer_widget.html`.
 """
 from flask import Blueprint, render_template, request, jsonify, abort
 import requests
+import subprocess
+import os
 
 from karapp.models import db, DeezerItem
 from karapp.tools.photo import make_artwork_base64
@@ -36,6 +38,42 @@ def deezer():
 def deezer_recherche():
     """Page de recherche live (le JS interroge /deezer/search)."""
     return render_template("deezer_search.html", types=SEARCH_TYPES, labels=TYPE_LABELS)
+
+
+@deezer_bp.route("/deezer/keyboard", methods=["POST"])
+def deezer_keyboard():
+    """Lance le clavier tactile système (matchbox-keyboard) par-dessus Chromium.
+
+    Nécessaire pour saisir sur les pages externes (login Deezer) où le clavier
+    virtuel de Karadoc — injecté uniquement dans ses propres pages — n'existe pas.
+    Kiosque Linux uniquement ; échoue proprement ailleurs (dev Windows).
+    """
+    try:
+        # Éviter d'empiler plusieurs instances.
+        running = subprocess.run(["pgrep", "-x", "matchbox-keyboard"],
+                                 capture_output=True)
+        if running.returncode != 0:
+            env = dict(os.environ)
+            env.setdefault("DISPLAY", ":0")
+            subprocess.Popen(
+                ["matchbox-keyboard"], env=env,
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            )
+        return jsonify({"success": True})
+    except FileNotFoundError:
+        return jsonify({"success": False, "error": "Clavier tactile indisponible"})
+    except Exception:
+        return jsonify({"success": False, "error": "Impossible de lancer le clavier"})
+
+
+@deezer_bp.route("/deezer/keyboard/hide", methods=["POST"])
+def deezer_keyboard_hide():
+    """Ferme le clavier tactile système s'il est ouvert."""
+    try:
+        subprocess.run(["pkill", "-x", "matchbox-keyboard"], capture_output=True)
+    except Exception:
+        pass
+    return jsonify({"success": True})
 
 
 @deezer_bp.route("/deezer/search")
@@ -67,7 +105,27 @@ def deezer_search():
 
     results = [normalize_item(item, search_type) for item in data.get("data", [])]
     results = [r for r in results if r]
+
+    # Deezer compare `q` au titre ET à d'autres champs (p. ex. le propriétaire
+    # d'une playlist) : on re-classe pour faire remonter les éléments dont le
+    # TITRE correspond le mieux à la recherche, sans en supprimer aucun.
+    results.sort(key=lambda r: title_relevance(r.get("title", ""), query), reverse=True)
+
     return jsonify({"results": results})
+
+
+def title_relevance(title, query):
+    """Score de correspondance entre un titre et la recherche (plus haut = mieux).
+    2 = le titre contient toute la requête ; sinon nombre de mots de la requête
+    présents dans le titre."""
+    title_l = (title or "").lower()
+    query_l = (query or "").lower().strip()
+    if not query_l:
+        return 0
+    if query_l in title_l:
+        return 2
+    words = [w for w in query_l.split() if w]
+    return sum(1 for w in words if w in title_l) / (len(words) or 1)
 
 
 @deezer_bp.route("/deezer/save", methods=["POST"])

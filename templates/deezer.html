@@ -7,6 +7,10 @@
         <a href="{{ url_for('deezer.deezer_recherche') }}" class="card root" style="background-color:#a238ff">
             <i class="fas fa-search"></i><br>Recherche
         </a>
+        <a href="https://www.deezer.com/login" class="card root" style="background-color:#6d28a8"
+           onclick="openDeezerLogin(event)">
+            <i class="fas fa-right-to-bracket"></i><br>Compte Deezer
+        </a>
         {% set icons = {'track': 'fa-music', 'album': 'fa-compact-disc', 'playlist': 'fa-list', 'artist': 'fa-user'} %}
         {% set colors = {'track': '#8bd3dd', 'album': '#f3d2c1', 'playlist': '#cddafd', 'artist': '#c3aed6'} %}
         {% for t in types %}
@@ -15,4 +19,18 @@
         </a>
         {% endfor %}
     </div>
+
+    <script>
+        // Ouvre le login Deezer en lançant d'abord le clavier tactile système
+        // (le clavier virtuel de Karadoc n'existe pas sur deezer.com).
+        function openDeezerLogin(e) {
+            e.preventDefault();
+            fetch('/deezer/keyboard', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).finally(function () {
+                window.location = 'https://www.deezer.com/login';
+            });
+        }
+    </script>
 {% endblock %}
