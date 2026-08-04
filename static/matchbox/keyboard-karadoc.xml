@@ -67,15 +67,18 @@
     </key>
   </row>
 
-  <!-- Symboles email en direct + espace + entrée -->
+  <!-- Symboles email + ponctuation en direct + espace + entrée -->
   <row>
     <key><default display="@"/></key>
     <key><default display="."/></key>
+    <key><default display=","/></key>
+    <key><default display="!"/></key>
+    <key><default display="?"/></key>
     <key><default display="_"/></key>
     <key><default display="-"/></key>
-    <key width="3000"><default display=" " action="space"/></key>
     <key><default display="/"/></key>
-    <key width="2000">
+    <key width="2000"><default display=" " action="space"/></key>
+    <key width="1500">
       <default display="image:/usr/share/matchbox-keyboard/return.png" action="return"/>
     </key>
   </row>

@@ -32,5 +32,15 @@
                 window.location = 'https://www.deezer.com/login';
             });
         }
+
+        // De retour sur Karadoc (y compris via un swipe-retour depuis deezer.com,
+        // qui restaure la page depuis le cache → 'pageshow' plutôt que 'load'),
+        // on ferme le clavier tactile système s'il est resté ouvert.
+        window.addEventListener('pageshow', function () {
+            fetch('/deezer/keyboard/hide', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).catch(function () {});
+        });
     </script>
 {% endblock %}
