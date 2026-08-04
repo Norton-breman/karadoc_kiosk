@@ -141,18 +141,49 @@ def scan_wifi_networks():
     except Exception:
         return []
 
-def connect_to_wifi(ssid, password=None):
-    """Se connecte à un réseau WiFi avec wpa_cli"""
+def find_network_id(ssid):
+    """Retourne l'id wpa_supplicant d'un réseau déjà enregistré pour ce SSID,
+    ou None s'il n'existe pas encore. Évite d'empiler des doublons dans la conf."""
     try:
-        # Ajouter un nouveau réseau
-        result = subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'add_network'],
-                              capture_output=True, text=True, timeout=5)
-
+        result = subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'list_networks'],
+                                capture_output=True, text=True, timeout=5)
         if result.returncode != 0:
-            return False, "Impossible d'ajouter le réseau"
+            return None
 
-        # Récupérer l'ID du réseau créé
-        network_id = result.stdout.strip()
+        # Format tab-séparé : network id / ssid / bssid / flags (1re ligne = en-tête)
+        for line in result.stdout.split('\n'):
+            parts = line.split('\t')
+            if len(parts) < 2:
+                continue
+            if parts[0] == 'network id':
+                continue
+            if parts[1] == ssid:
+                return parts[0].strip()
+        return None
+    except Exception:
+        return None
+
+def connect_to_wifi(ssid, password=None):
+    """Se connecte à un réseau WiFi avec wpa_cli.
+
+    Réutilise l'entrée existante si le SSID est déjà enregistré (met à jour le
+    mot de passe au passage) au lieu d'en créer une nouvelle, ce qui évitait
+    d'empiler des doublons dans wpa_supplicant.conf à chaque connexion.
+    """
+    try:
+        # Réutiliser le réseau existant s'il y en a un, sinon en créer un.
+        network_id = find_network_id(ssid)
+        created = network_id is None
+
+        if created:
+            result = subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'add_network'],
+                                  capture_output=True, text=True, timeout=5)
+
+            if result.returncode != 0:
+                return False, "Impossible d'ajouter le réseau"
+
+            # Récupérer l'ID du réseau créé
+            network_id = result.stdout.strip()
 
         try:
             # Configurer le SSID
@@ -183,9 +214,11 @@ def connect_to_wifi(ssid, password=None):
             return True, f"Connexion au réseau {ssid} en cours..."
 
         except subprocess.CalledProcessError as e:
-            # En cas d'erreur, supprimer le réseau créé
-            subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'remove_network', network_id],
-                         capture_output=True, text=True, timeout=5)
+            # En cas d'erreur, supprimer le réseau UNIQUEMENT si on vient de le
+            # créer (ne pas effacer une entrée existante, p. ex. le réseau maison).
+            if created:
+                subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'remove_network', network_id],
+                             capture_output=True, text=True, timeout=5)
             return False, f"Erreur de configuration: {e.stderr if e.stderr else 'configuration invalide'}"
 
     except subprocess.TimeoutExpired:
