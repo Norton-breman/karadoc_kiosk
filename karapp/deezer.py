@@ -48,22 +48,38 @@ def deezer_keyboard():
     virtuel de Karadoc — injecté uniquement dans ses propres pages — n'existe pas.
     Kiosque Linux uniquement ; échoue proprement ailleurs (dev Windows).
     """
+    env = dict(os.environ)
+    env.setdefault("DISPLAY", ":0")
     try:
         # Éviter d'empiler plusieurs instances.
         running = subprocess.run(["pgrep", "-x", "matchbox-keyboard"],
                                  capture_output=True)
         if running.returncode != 0:
-            env = dict(os.environ)
-            env.setdefault("DISPLAY", ":0")
             subprocess.Popen(
                 ["matchbox-keyboard"], env=env,
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             )
-        return jsonify({"success": True})
     except FileNotFoundError:
         return jsonify({"success": False, "error": "Clavier tactile indisponible"})
     except Exception:
         return jsonify({"success": False, "error": "Impossible de lancer le clavier"})
+
+    # Sans gestionnaire de fenêtres, matchbox-keyboard s'ouvre petit en haut à
+    # gauche. On force sa géométrie : bas de l'écran, pleine largeur (320), haut
+    # de 200 px → les touches s'agrandissent pour remplir la fenêtre.
+    # Écran 320x480 → largeur 320, hauteur 200, position (0, 280).
+    try:
+        subprocess.run(
+            ["xdotool", "search", "--sync", "--class", "matchbox-keyboard",
+             "windowsize", "320", "200", "windowmove", "0", "280"],
+            env=env, capture_output=True, timeout=10,
+        )
+    except Exception:
+        # xdotool absent ou fenêtre introuvable : le clavier reste utilisable
+        # à sa taille/position par défaut.
+        pass
+
+    return jsonify({"success": True})
 
 
 @deezer_bp.route("/deezer/keyboard/hide", methods=["POST"])
