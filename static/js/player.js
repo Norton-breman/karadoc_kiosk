@@ -50,6 +50,15 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('volumeUpBtn').addEventListener('click', volumeUp);
     document.getElementById('volumeDownBtn').addEventListener('click', volumeDown);
 
+    // Restaurer le volume enregistré
+    fetch('/volume')
+        .then(response => response.json())
+        .then(data => {
+            audioPlayer.volume = data.volume;
+            updateVolumeDisplay();
+        })
+        .catch(error => console.error('Erreur chargement volume:', error));
+
     // Timeline
     const timeline = document.getElementById('timeline');
     timeline.addEventListener('input', seekTrack);
@@ -192,6 +201,7 @@ function volumeUp() {
     if (audioPlayer.volume < 1) {
         audioPlayer.volume = Math.min(1, audioPlayer.volume + 0.1);
         updateVolumeDisplay();
+        saveVolume();
     }
 }
 
@@ -200,7 +210,17 @@ function volumeDown() {
     if (audioPlayer.volume > 0) {
         audioPlayer.volume = Math.max(0, audioPlayer.volume - 0.1);
         updateVolumeDisplay();
+        saveVolume();
     }
+}
+
+// Enregistrer le volume côté serveur
+function saveVolume() {
+    fetch('/volume', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({volume: audioPlayer.volume})
+    }).catch(error => console.error('Erreur sauvegarde volume:', error));
 }
 
 // Afficher le volume

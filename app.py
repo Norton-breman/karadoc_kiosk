@@ -1,4 +1,5 @@
 import os
+import json
 from dotenv import load_dotenv
 from pathlib import Path
 import requests
@@ -48,6 +49,26 @@ def parametres():
     current_wifi = get_current_wifi()
     connected_bluetooth = get_connected_bluetooth_devices()
     return render_template('parameters.html', current_wifi=current_wifi, connected_bluetooth=connected_bluetooth)
+
+# Volume du lecteur, persistant entre les redémarrages
+VOLUME_FILE = os.path.join(os.getenv('DB_PATH'), 'volume.json')
+
+@app.route('/volume', methods=['GET', 'POST'])
+def volume():
+    if request.method == 'POST':
+        try:
+            value = min(1.0, max(0.0, float(request.get_json()['volume'])))
+        except (TypeError, KeyError, ValueError):
+            return jsonify({'error': 'volume invalide'}), 400
+        with open(VOLUME_FILE, 'w') as f:
+            json.dump({'volume': value}, f)
+        return jsonify({'volume': value})
+    try:
+        with open(VOLUME_FILE) as f:
+            value = json.load(f)['volume']
+    except (OSError, ValueError, KeyError):
+        value = 1.0
+    return jsonify({'volume': value})
 
 @app.route('/sync_db', endpoint='db_sync')
 def synd_db():
