@@ -428,5 +428,9 @@ if __name__ == '__main__':
     # Exclure .git et .venv du reloader : sans cela, le `git fetch` déclenché
     # par la vérification de mise à jour modifie des fichiers dans .git/ et
     # provoque des redémarrages en boucle du serveur en mode debug.
-    app.run(host="0.0.0.0", port=5000, debug=True,
+    # HTTPS optionnel (test du widget Deezer) : si SSL_CERT et SSL_KEY pointent
+    # vers un certificat, le serveur est servi en https, sinon en http.
+    ssl_cert, ssl_key = os.getenv("SSL_CERT"), os.getenv("SSL_KEY")
+    ssl_context = (ssl_cert, ssl_key) if ssl_cert and ssl_key else None
+    app.run(host="0.0.0.0", port=5000, debug=True, ssl_context=ssl_context,
             exclude_patterns=["*/.git/*", "*/.venv/*"])
