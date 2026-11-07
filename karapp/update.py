@@ -11,6 +11,7 @@ automatiquement le code Python modifié par le git pull.
 """
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 from flask import Blueprint, jsonify
