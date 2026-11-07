@@ -16,6 +16,11 @@
                     <div class="deezer-item-subtitle">{{ item.subtitle }}</div>
                 </div>
             </a>
+            <!-- TEST temporaire : lecture via le widget en iframe -->
+            <a class="deezer-test-btn" title="Tester le widget"
+               href="{{ url_for('deezer.deezer_widget_test', item_type=item.type, deezer_id=item.deezer_id, title=item.title) }}">
+                <i class="fas fa-vial"></i>
+            </a>
             <form method="POST" action="{{ url_for('deezer.deezer_delete', item_id=item.id) }}"
                   data-confirm="Retirer « {{ item.title }} » de ta bibliothèque ?" data-confirm-text="Retirer">
                 <button type="submit" class="deezer-delete-btn" title="Retirer">

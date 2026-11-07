@@ -30,7 +30,9 @@ def wifi_connect():
         networks = scan_wifi_networks()
         current_wifi = get_current_wifi()
         wifi_enabled = is_wifi_enabled()
-        return render_template('wifi.html', networks=networks, current_wifi=current_wifi, wifi_enabled=wifi_enabled, error=message)
+        # retry_ssid : rouvre la saisie du mot de passe pour ce réseau
+        return render_template('wifi.html', networks=networks, current_wifi=current_wifi, wifi_enabled=wifi_enabled,
+                               error=message, retry_ssid=ssid)
 
 @connection_bp.route('/wifi/toggle', methods=['POST'])
 def wifi_toggle():
@@ -218,15 +220,32 @@ def connect_to_wifi(ssid, password=None):
             # else : réseau connu reconnecté sans mot de passe → on garde sa
             # config existante (psk/key_mgmt), on se contente de l'activer.
 
-            # Activer le réseau
-            subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'enable_network', network_id],
+            # Sélectionner le réseau : contrairement à `enable_network`, force la
+            # bascule même si on est déjà connecté à un autre réseau (la box).
+            subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'select_network', network_id],
                          capture_output=True, text=True, timeout=5, check=True)
+
+            connected = wait_for_connection(ssid)
+
+            # Si la connexion a échoué, ne pas garder un réseau tout juste créé
+            # (mot de passe erroné) dans la configuration.
+            if not connected and created:
+                subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'remove_network', network_id],
+                             capture_output=True, text=True, timeout=5)
+
+            # `select_network` désactive tous les autres réseaux : on les réactive
+            # pour que le Pi puisse toujours s'y reconnecter tout seul (au reboot
+            # ou si le réseau choisi disparaît).
+            subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'enable_network', 'all'],
+                         capture_output=True, text=True, timeout=5)
 
             # Sauvegarder la configuration
             subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'save_config'],
                          capture_output=True, text=True, timeout=5)
 
-            return True, f"Connexion au réseau {ssid} en cours..."
+            if not connected:
+                return False, f"Impossible de se connecter à {ssid}. Le mot de passe a peut-être changé."
+            return True, f"Connecté à {ssid}"
 
         except subprocess.CalledProcessError as e:
             # En cas d'erreur, supprimer le réseau UNIQUEMENT si on vient de le
@@ -242,6 +261,24 @@ def connect_to_wifi(ssid, password=None):
         return False, "wpa_cli non disponible"
     except Exception as e:
         return False, f"Erreur: {str(e)}"
+
+def wait_for_connection(ssid, timeout=15):
+    """Attend que wpa_supplicant soit authentifié sur `ssid` (wpa_state=COMPLETED).
+
+    Retourne False si la connexion n'aboutit pas dans le délai (mot de passe
+    erroné, réseau hors de portée...)."""
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        time.sleep(1)
+        try:
+            result = subprocess.run(['sudo', 'wpa_cli', '-i', WIFI_INTERFACE, 'status'],
+                                  capture_output=True, text=True, timeout=5)
+        except subprocess.TimeoutExpired:
+            continue
+        status = dict(line.split('=', 1) for line in result.stdout.split('\n') if '=' in line)
+        if status.get('wpa_state') == 'COMPLETED' and status.get('ssid') == ssid:
+            return True
+    return False
 
 def get_current_wifi():
     """Récupère le réseau WiFi actuellement connecté"""

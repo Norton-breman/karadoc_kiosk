@@ -229,6 +229,20 @@ def deezer_play(item_type, deezer_id):
     return redirect(f"https://www.deezer.com/{item_type}/{deezer_id}")
 
 
+@deezer_bp.route("/deezer/widget_test/<item_type>/<deezer_id>")
+def deezer_widget_test(item_type, deezer_id):
+    """Page de TEST : widget officiel en iframe + infos de diagnostic.
+
+    Sert à comprendre pourquoi le widget lit en entier sur une page web classique
+    (utilisateur connecté) mais reste en extraits 30 s dans Karadoc.
+    """
+    if item_type not in SEARCH_TYPES:
+        abort(404)
+    title = request.args.get("title", "")
+    widget_url = f"https://widget.deezer.com/widget/dark/{item_type}/{deezer_id}"
+    return render_template("deezer_widget_test.html", widget_url=widget_url, title=title)
+
+
 @deezer_bp.route("/deezer/delete/<int:item_id>", methods=["POST"])
 def deezer_delete(item_id):
     """Supprime un élément enregistré."""

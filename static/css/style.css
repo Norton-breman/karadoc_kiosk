@@ -567,3 +567,25 @@ h2 {
     border: none;
     border-radius: 12px;
 }
+
+/* Page de test du widget (temporaire) */
+.deezer-test-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    flex-shrink: 0;
+    color: #a238ff;
+}
+
+.deezer-widget-diag {
+    font-size: 0.8em;
+    padding: 0 10px 1em;
+    word-break: break-all;
+}
+
+.deezer-widget-diag a {
+    display: inline-block;
+    margin-top: 0.5em;
+    color: #a238ff;
+}
