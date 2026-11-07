@@ -10,6 +10,7 @@ from flask import Blueprint, render_template, request, jsonify, abort, redirect
 import requests
 import subprocess
 import os
+from threading import Thread
 
 from karapp.models import db, DeezerItem
 from karapp.tools.photo import make_artwork_base64
@@ -80,16 +81,21 @@ def deezer_keyboard():
     # cible par --name. On force sa géométrie : bas de l'écran, pleine largeur,
     # hauteur 240 px (le layout complet lq1 a plusieurs rangées) → les touches
     # s'agrandissent pour remplir. Écran 320x480 → position (0, 240), taille 320x240.
-    try:
-        subprocess.run(
-            ["xdotool", "search", "--sync", "--name", "Keyboard",
-             "windowmove", "0", "240", "windowsize", "320", "240"],
-            env=env, capture_output=True, timeout=10,
-        )
-    except Exception:
-        # xdotool absent ou fenêtre introuvable : le clavier reste utilisable
-        # à sa taille/position par défaut.
-        pass
+    # Fait dans un thread : `--sync` attend que la fenêtre existe (jusqu'à 10 s),
+    # et la navigation vers deezer.com/login ne doit pas attendre ce délai.
+    def _position_keyboard():
+        try:
+            subprocess.run(
+                ["xdotool", "search", "--sync", "--name", "Keyboard",
+                 "windowmove", "0", "240", "windowsize", "320", "240"],
+                env=env, capture_output=True, timeout=10,
+            )
+        except Exception:
+            # xdotool absent ou fenêtre introuvable : le clavier reste utilisable
+            # à sa taille/position par défaut.
+            pass
+
+    Thread(target=_position_keyboard, daemon=True).start()
 
     return jsonify({"success": True})
 
