@@ -20,12 +20,17 @@
     </div>
 
     <script>
-        document.getElementById('diagOrigin').textContent = window.location.origin;
-        document.getElementById('diagSecure').textContent = window.isSecureContext ? 'oui' : 'non';
-        const chrome = navigator.userAgent.match(/Chrom(e|ium)\/([\d.]+)/);
-        document.getElementById('diagBrowser').textContent = chrome ? `Chromium ${chrome[2]}` : navigator.userAgent;
-        // Même page servie depuis localhost (contexte sécurisé même en http)
-        document.getElementById('diagLocalhost').href =
-            `${window.location.protocol}//localhost:${window.location.port}${window.location.pathname}${window.location.search}`;
+        // Fonction isolée : une variable globale nommée `chrome` entre en conflit
+        // avec window.chrome de Chromium et bloque tout le script.
+        (function () {
+            const loc = window.location;
+            document.getElementById('diagOrigin').textContent = loc.origin;
+            document.getElementById('diagSecure').textContent = window.isSecureContext ? 'oui' : 'non';
+            const version = navigator.userAgent.match(/Chrom(e|ium)\/([\d.]+)/);
+            document.getElementById('diagBrowser').textContent = version ? `Chromium ${version[2]}` : navigator.userAgent;
+            // Même page servie depuis localhost (contexte sécurisé même en http)
+            document.getElementById('diagLocalhost').href =
+                `${loc.protocol}//localhost:${loc.port}${loc.pathname}${loc.search}`;
+        })();
     </script>
 {% endblock %}
