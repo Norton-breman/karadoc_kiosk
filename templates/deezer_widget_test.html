@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Test widget — Deezer{% endblock %}
+{% block content %}
+    {% if title %}<h2 class="deezer-widget-title"><i class="fab fa-deezer"></i> {{ title }}</h2>{% endif %}
+
+    <div class="deezer-widget-wrap">
+        <iframe title="Deezer" class="deezer-widget-frame"
+                src="{{ widget_url }}"
+                frameborder="0" allowtransparency="true"
+                allow="encrypted-media; clipboard-write"></iframe>
+    </div>
+
+    <!-- Infos de diagnostic (page de test temporaire) -->
+    <div class="deezer-widget-diag">
+        <div>Origine : <b id="diagOrigin"></b></div>
+        <div>Contexte sécurisé : <b id="diagSecure"></b></div>
+        <div>Navigateur : <b id="diagBrowser"></b></div>
+        <a href="{{ widget_url }}">Ouvrir le widget en page entière</a>
+        <br><a id="diagLocalhost" href="#">Recharger cette page via localhost</a>
+    </div>
+
+    <script>
+        document.getElementById('diagOrigin').textContent = window.location.origin;
+        document.getElementById('diagSecure').textContent = window.isSecureContext ? 'oui' : 'non';
+        const chrome = navigator.userAgent.match(/Chrom(e|ium)\/([\d.]+)/);
+        document.getElementById('diagBrowser').textContent = chrome ? `Chromium ${chrome[2]}` : navigator.userAgent;
+        // Même page servie depuis localhost (contexte sécurisé même en http)
+        document.getElementById('diagLocalhost').href =
+            `${window.location.protocol}//localhost:${window.location.port}${window.location.pathname}${window.location.search}`;
+    </script>
+{% endblock %}
